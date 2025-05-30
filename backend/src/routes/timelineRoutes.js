@@ -1,0 +1,162 @@
+import express from 'express';
+import { TimelineController } from '../controllers/TimelineController.js';
+
+const router = express.Router();
+const timelineController = new TimelineController();
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Timelines
+ *   description: API para gestión de timelines de procesos legales
+ */
+
+
+// Crear timeline para un proceso
+/**
+ * @swagger
+ * /timelines:
+ *   post:
+ *     summary: Crear un nuevo timeline para un proceso
+ *     tags: [Timelines]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               process_id:
+ *                 type: integer
+ *               description:
+ *                 type: string
+ *             required:
+ *               - process_id
+ *     responses:
+ *       201:
+ *         description: Timeline creado correctamente
+ *       400:
+ *         description: Datos inválidos
+ */
+router.post('/', timelineController.createTimeline.bind(timelineController));
+
+// Obtener timeline por process_id
+/**
+ * @swagger
+ * /timelines/process/{process_id}:
+ *   get:
+ *     summary: Obtener timeline por ID de proceso
+ *     tags: [Timelines]
+ *     parameters:
+ *       - in: path
+ *         name: process_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del proceso
+ *     responses:
+ *       200:
+ *         description: Timeline encontrado
+ *       404:
+ *         description: Timeline no encontrado
+ */
+router.get('/process/:process_id', timelineController.getTimelineByProcess.bind(timelineController));
+
+// Agregar evento a timeline
+/**
+ * @swagger
+ * /timelines/{timeline_id}/event:
+ *   post:
+ *     summary: Agregar un evento a un timeline
+ *     tags: [Timelines]
+ *     parameters:
+ *       - in: path
+ *         name: timeline_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del timeline
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               event_title:
+ *                 type: string
+ *               event_date:
+ *                 type: string
+ *                 format: date-time
+ *               description:
+ *                 type: string
+ *             required:
+ *               - event_title
+ *               - event_date
+ *     responses:
+ *       201:
+ *         description: Evento agregado al timeline
+ *       400:
+ *         description: Datos inválidos
+ */
+router.post('/:timeline_id/event', timelineController.addEvent.bind(timelineController));
+
+// Modificar evento
+/**
+ * @swagger
+ * /timelines/event:
+ *   put:
+ *     summary: Modificar un evento en un timeline
+ *     tags: [Timelines]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               event_id:
+ *                 type: integer
+ *               event_title:
+ *                 type: string
+ *               event_date:
+ *                 type: string
+ *                 format: date-time
+ *               description:
+ *                 type: string
+ *             required:
+ *               - event_id
+ *     responses:
+ *       200:
+ *         description: Evento modificado correctamente
+ *       400:
+ *         description: Datos inválidos
+ *       404:
+ *         description: Evento no encontrado
+ */
+router.put('/event', timelineController.modifyEvent.bind(timelineController));
+
+// Remover evento
+/**
+ * @swagger
+ * /timelines/event/{event_id}:
+ *   delete:
+ *     summary: Remover un evento de un timeline
+ *     tags: [Timelines]
+ *     parameters:
+ *       - in: path
+ *         name: event_id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID del evento a eliminar
+ *     responses:
+ *       200:
+ *         description: Evento eliminado correctamente
+ *       404:
+ *         description: Evento no encontrado
+ */
+router.delete('/event/:event_id', timelineController.removeEvent.bind(timelineController));
+
+export default router;
