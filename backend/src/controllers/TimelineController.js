@@ -1,4 +1,4 @@
-import { TimelineService } from '../services/TimelineService.js';
+import { TimelineService } from "../services/TimelineService.js";
 
 const timelineService = new TimelineService();
 
@@ -47,7 +47,7 @@ export class TimelineController {
   async getTimelineByProcess(req, res) {
     try {
       const { process_id } = req.params;
-      const timeline = await timelineService.getTimelineByProcess(process_id);
+      const timeline = await timelineService.getTimelineByProcessId(process_id);
       res.status(200).json(timeline);
     } catch (error) {
       res.status(404).json({ message: error.message });

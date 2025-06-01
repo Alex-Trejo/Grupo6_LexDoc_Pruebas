@@ -1,4 +1,4 @@
-import pool from '../config/db.js';
+import pool from "../config/db.js";
 
 export class ProcessRepository {
   async create(process) {
@@ -15,13 +15,13 @@ export class ProcessRepository {
       process.account_id,
     ];
     const { rows } = await pool.query(query, values);
-    return rows[0];
+    return rows[0] || null;
   }
-
+ 
   async findById(process_id) {
-    const query = `SELECT * FROM process WHERE process_id = $1`;
+    const query = "SELECT * FROM process WHERE process_id = $1";
     const { rows } = await pool.query(query, [process_id]);
-    return rows[0];
+    return rows[0] || null;
   }
 
   async update(process) {

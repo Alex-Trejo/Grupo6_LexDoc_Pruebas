@@ -35,13 +35,15 @@ export class ProcessController {
 
   async getProcessById(req, res) {
     try {
-      const { id } = req.params;
-      const process = await processService.getProcessById(id);
+      const { process_id } = req.params;
+      const process = await processService.getProcessById(process_id);
+
       res.status(200).json(process);
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
   }
+  
 
   async addEvent(req, res) {
     try {
