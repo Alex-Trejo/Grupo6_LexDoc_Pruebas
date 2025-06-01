@@ -22,6 +22,7 @@ export class AccountService {
   }
 
   async recoverPassword(email) {
+    
     const user = await accountRepo.findByEmail(email);
     if (!user) throw new Error('Email not found');
     // Prox lógica para enviar correo de recuperación con token

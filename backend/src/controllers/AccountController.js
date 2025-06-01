@@ -6,6 +6,23 @@ export class AccountController {
   async register(req, res) {
     try {
       const account = req.body;
+      if (!account.username || !account.password || !account.email || !account.role) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+      if (!['admin', 'abogada', 'lector'].includes(account.role)) {
+        return res.status(400).json({ message: 'Invalid role' });
+      }
+
+      // Validate phone number format if provided
+      if (account.phone_number && !/^\+?[1-9]\d{1,14}$/.test(account.phone_number)) {
+        return res.status(400).json({ message: 'Invalid phone number format' });
+      }
+      
+      //Validare email format
+      if (account.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(account.email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+      }
+      // Create the account
       const newAccount = await accountService.register(account);
       res.status(201).json(newAccount);
     } catch (error) {
