@@ -1,7 +1,9 @@
 import express from "express";
 import { ProcessController } from "../controllers/ProcessController.js";
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+router.use(authenticateToken);
 const processController = new ProcessController();
 
 /**
@@ -18,6 +20,8 @@ const processController = new ProcessController();
  *   post:
  *     summary: Crear un nuevo proceso
  *     tags: [Processes]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -25,28 +29,41 @@ const processController = new ProcessController();
  *           schema:
  *             type: object
  *             properties:
- *               case_number:
- *                 type: string
  *               title:
  *                 type: string
- *               description:
+ *                 example: "Proceso penal"
+ *               type:
  *                 type: string
- *               status:
+ *                 example: "Civil"
+ *               offense:
  *                 type: string
- *               start_date:
+ *                 example: "Robo"
+ *               last_update:
  *                 type: string
- *                 format: date
+ *                 format: date-time
+ *                 example: "2025-06-01T10:00:00Z"
+ *               denounced:
+ *                 type: string
+ *                 example: "Juan Pérez"
+ *               denouncer:
+ *                 type: string
+ *                 example: "María López"
+ *               province:
+ *                 type: string
+ *                 example: "Buenos Aires"
+ *               carton:
+ *                 type: string
+ *                 example: "Carton123"
  *             required:
- *               - case_number
  *               - title
- *               - status
- *               - start_date
  *     responses:
  *       201:
  *         description: Proceso creado correctamente
+ *         
  *       400:
  *         description: Datos inválidos
  */
+
 router.post("/", processController.createProcess.bind(processController));
 
 /**
@@ -55,6 +72,8 @@ router.post("/", processController.createProcess.bind(processController));
  *   get:
  *     summary: Obtener un proceso por ID
  *     tags: [Processes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: process_id
@@ -79,6 +98,8 @@ router.get(
  *   put:
  *     summary: Actualizar un proceso por ID
  *     tags: [Processes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: process_id
@@ -125,6 +146,8 @@ router.delete(
  *   get:
  *     summary: Obtener todos los procesos o filtrar por estado, fecha o nombre
  *     tags: [Processes]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: status

@@ -1,5 +1,6 @@
 import express from 'express';
 import { AccountController } from '../controllers/AccountController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 const accountController = new AccountController();
@@ -107,17 +108,12 @@ router.post('/recover-password', accountController.recoverPassword.bind(accountC
 // Modificar perfil
 /**
  * @swagger
- * /accounts/profile/{account_id}:
+ * /accounts/profile:
  *   put:
- *     summary: Modificar perfil de usuario
+ *     summary: Modificar información de cuenta y perfil del usuario autenticado
  *     tags: [Accounts]
- *     parameters:
- *       - in: path
- *         name: account_id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID del usuario
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -125,15 +121,30 @@ router.post('/recover-password', accountController.recoverPassword.bind(accountC
  *           schema:
  *             type: object
  *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: ejemplo@dominio.com
+ *               phone_number:
+ *                 type: string
+ *                 example: "+593987654321"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: nuevaContraseñaSegura123
  *               content:
  *                 type: string
+ *                 example: "Soy abogada con experiencia en derecho civil."
  *     responses:
  *       200:
- *         description: Perfil actualizado
+ *         description: Cuenta y/o perfil actualizado correctamente
+ *       400:
+ *         description: Error en los datos enviados
  *       404:
  *         description: Usuario no encontrado
  */
-router.put('/profile/:account_id', accountController.modifyProfile.bind(accountController));
+
+router.put('/profile', authenticateToken, accountController.modifyProfile.bind(accountController));
 
 export default router;
 

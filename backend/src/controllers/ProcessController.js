@@ -6,6 +6,7 @@ export class ProcessController {
   async createProcess(req, res) {
     try {
       const processData = req.body;
+       processData.account_id = req.user.id;
       const newProcess = await processService.createProcess(processData);
       res.status(201).json(newProcess);
     } catch (error) {

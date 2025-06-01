@@ -1,7 +1,6 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-// Definición básica de tu documentación OpenAPI
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -15,9 +14,18 @@ const swaggerOptions = {
         url: 'http://localhost:3000/api',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {                // Definición del esquema de seguridad Bearer
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    // NO agregues "security" aquí para no hacerlo global
   },
-  // Ruta a tus archivos que contienen las rutas y comentarios Swagger
-   apis: ['./src/routes/*.js'], 
+  apis: ['./src/routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);

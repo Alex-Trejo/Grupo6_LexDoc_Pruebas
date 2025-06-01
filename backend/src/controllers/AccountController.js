@@ -52,8 +52,32 @@ export class AccountController {
 
   async modifyProfile(req, res) {
     try {
-      const account_id = req.params.account_id;
+      const account_id = req.user.id;
       const profileData = req.body;
+
+            // Validar formato y dominio del correo
+      if (profileData.email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const allowedDomains = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'espe.ec.edu.ec']; 
+
+        if (!emailRegex.test(profileData.email)) {
+          return res.status(400).json({ message: 'Invalid email format' });
+        }
+
+        const domain = profileData.email.split('@')[1];
+        if (!allowedDomains.includes(domain)) {
+          return res.status(400).json({ message: `Email domain '${domain}' is not allowed` });
+        }
+      }
+
+
+      // Validate phone number format if provided
+      if (profileData.phone_number && !/^\+?[1-9]\d{1,14}$/.test(profileData.phone_number)) {
+        return res.status(400).json({ message: 'Invalid phone number format' });
+      }
+
+
+
       const updated = await accountService.modifyProfile(
         account_id,
         profileData

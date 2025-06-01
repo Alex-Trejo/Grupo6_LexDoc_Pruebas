@@ -14,11 +14,6 @@ export class AccountRepository {
     return rows[0];
   }
 
-  async findByEmail(email) {
-    const query = `SELECT * FROM account WHERE email = $1`;
-    const { rows } = await pool.query(query, [email]);
-    return rows[0];
-  }
 
   async findById(account_id) {
     const query = `SELECT * FROM account WHERE account_id = $1`;
@@ -41,5 +36,6 @@ export class AccountRepository {
     return rows[0]; // Devuelve el primer usuario con ese email
   
 }
+
 
 }

@@ -1,14 +1,21 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AccountRepository } from '../repositories/AccountRepository.js';
+import { ProfileRepository } from '../repositories/ProfileRepository.js';
 
 const accountRepo = new AccountRepository();
+const profileRepo = new ProfileRepository();
+
 
 export class AccountService {
   async register(account) {
     const hashedPassword = await bcrypt.hash(account.password, 10);
     account.password = hashedPassword;
-    return await accountRepo.create(account);
+    const createdAccount = await accountRepo.create(account);     
+    await profileRepo.create({ account_id: createdAccount.account_id, content: null });
+
+    return createdAccount;
+
   }
 
   async login(username, password) {
@@ -37,11 +44,51 @@ export class AccountService {
     // Obtener cuenta actual
     const account = await accountRepo.findById(account_id);
     if (!account) throw new Error("Account not found");
+
+    // Conservar valores anteriores si el nuevo valor no es válido
+  const email =
+    profileData.email !== null && profileData.email !== undefined && profileData.email !== ''
+      ? profileData.email
+      : account.email;
+
+     const phone_number =
+    profileData.phone_number !== null && profileData.phone_number !== undefined && profileData.phone_number !== ''
+      ? profileData.phone_number
+      : account.phone_number;
+
+
+     let password = account.password;
+      if (profileData.password) {
+        password = await bcrypt.hash(profileData.password, 10);
+      }
+      
+
+
     const updatedAccount = {
-      ...account,
-      ...profileData,
-      account_id,
+       ...account,
+        email,
+        phone_number,
+        password,
+        account_id
     };
-    return await accountRepo.update(updatedAccount);
+    await accountRepo.update(updatedAccount);
+
+     // Si se proporcionó "content", actualizar el perfil
+  let updatedProfile = null;
+  if (profileData.content !== undefined) {
+    const profile = await profileRepo.findByAccountId(account_id);
+    if (profile) {
+      updatedProfile = await profileRepo.update({
+        profile_id: profile.profile_id,
+        content: profileData.content
+      });
+    }
+  }
+
+  // Devuelve la cuenta y el perfil actualizado (si aplica)
+  return {
+    account: updatedAccount,
+    ...(updatedProfile && { profile: updatedProfile })
+  };
   }
 }
