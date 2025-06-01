@@ -1,4 +1,4 @@
-import { AccountService } from '../services/AccountService.js';
+import { AccountService } from "../services/AccountService.js";
 
 const accountService = new AccountService();
 
@@ -27,7 +27,7 @@ export class AccountController {
     try {
       const { email } = req.body;
       await accountService.recoverPassword(email);
-      res.status(200).json({ message: 'Recovery email sent' });
+      res.status(200).json({ message: "Recovery email sent" });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -35,9 +35,12 @@ export class AccountController {
 
   async modifyProfile(req, res) {
     try {
-      const account_id = req.params.id;
+      const account_id = req.params.account_id;
       const profileData = req.body;
-      const updated = await accountService.modifyProfile(account_id, profileData);
+      const updated = await accountService.modifyProfile(
+        account_id,
+        profileData
+      );
       res.status(200).json(updated);
     } catch (error) {
       res.status(400).json({ message: error.message });

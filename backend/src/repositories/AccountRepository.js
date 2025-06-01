@@ -27,4 +27,13 @@ export class AccountRepository {
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
+
+  async findByEmail(email) {
+    const query = 'SELECT * FROM account WHERE email = $1';
+    const values = [email];
+    const { rows } = await pool.query(query, values);
+    return rows[0]; // Devuelve el primer usuario con ese email
+  
+}
+
 }

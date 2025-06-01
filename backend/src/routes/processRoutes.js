@@ -1,5 +1,5 @@
-import express from 'express';
-import { ProcessController } from '../controllers/ProcessController.js';
+import express from "express";
+import { ProcessController } from "../controllers/ProcessController.js";
 
 const router = express.Router();
 const processController = new ProcessController();
@@ -10,7 +10,6 @@ const processController = new ProcessController();
  *   name: Processes
  *   description: API para gestión de procesos legales
  */
-
 
 // CRUD procesos
 /**
@@ -48,8 +47,7 @@ const processController = new ProcessController();
  *       400:
  *         description: Datos inválidos
  */
-router.post('/', processController.createProcess.bind(processController));
-
+router.post("/", processController.createProcess.bind(processController));
 
 /**
  * @swagger
@@ -70,8 +68,10 @@ router.post('/', processController.createProcess.bind(processController));
  *       404:
  *         description: Proceso no encontrado
  */
-router.get('/:process_id', processController.getProcessById.bind(processController));
-
+router.get(
+  "/:process_id",
+  processController.getProcessById.bind(processController)
+);
 
 /**
  * @swagger
@@ -112,28 +112,11 @@ router.get('/:process_id', processController.getProcessById.bind(processControll
  *       404:
  *         description: Proceso no encontrado
  */
-router.put('/:process_id', processController.updateProcess.bind(processController));
 
-/**
- * @swagger
- * /processes/{process_id}:
- *   delete:
- *     summary: Eliminar un proceso por ID
- *     tags: [Processes]
- *     parameters:
- *       - in: path
- *         name: process_id
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID del proceso a eliminar
- *     responses:
- *       200:
- *         description: Proceso eliminado correctamente
- *       404:
- *         description: Proceso no encontrado
- */
-router.delete('/:process_id', processController.deleteProcess.bind(processController));
+router.delete(
+  "/:process_id",
+  processController.deleteProcess.bind(processController)
+);
 
 // Obtener todos o filtro por estado, fecha, nombre
 /**
@@ -166,6 +149,6 @@ router.delete('/:process_id', processController.deleteProcess.bind(processContro
  *       200:
  *         description: Lista de procesos
  */
-router.get('/', processController.getAllProcesses.bind(processController));
+router.get("/", processController.getAllProcesses.bind(processController));
 
 export default router;
