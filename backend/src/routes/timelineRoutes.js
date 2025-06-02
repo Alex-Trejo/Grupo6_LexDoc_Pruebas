@@ -69,7 +69,7 @@ router.post('/', timelineController.createTimeline.bind(timelineController));
  */
 router.get('/process/:process_id', timelineController.getTimelineByProcess.bind(timelineController));
 
-// Agregar evento a timeline
+// Agregar evento a timeline, se modifica la tabla de eventos y de timelines
 /**
  * @swagger
  * /timelines/{timeline_id}/event:
