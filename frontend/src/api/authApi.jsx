@@ -1,7 +1,5 @@
-const API_URL = 'http://localhost:3000/api-docs';
-
 export async function loginUser(credentials) {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch('http://localhost:3000/api/accounts/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(credentials),
@@ -11,5 +9,5 @@ export async function loginUser(credentials) {
     throw new Error('Error en el inicio de sesión');
   }
 
-  return response.json();
+  return await response.json();
 }

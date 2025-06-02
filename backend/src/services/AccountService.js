@@ -6,89 +6,97 @@ import { ProfileRepository } from '../repositories/ProfileRepository.js';
 const accountRepo = new AccountRepository();
 const profileRepo = new ProfileRepository();
 
-
 export class AccountService {
   async register(account) {
     const hashedPassword = await bcrypt.hash(account.password, 10);
     account.password = hashedPassword;
-    const createdAccount = await accountRepo.create(account);     
-    await profileRepo.create({ account_id: createdAccount.account_id, content: null });
+    const createdAccount = await accountRepo.create(account);
+    await profileRepo.create({
+      account_id: createdAccount.account_id,
+      content: null,
+    });
 
     return createdAccount;
-
   }
 
   async login(username, password) {
-    const user = await accountRepo.findByUsername(username);
-    if (!user) throw new Error("User not found");
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) throw new Error("Invalid password");
+    try {
+      const user = await accountRepo.findByUsername(username);
+      if (!user) {
+        console.log('❌ Usuario no encontrado:', username);
+        throw new Error('User not found');
+      }
 
-    const token = jwt.sign(
-      { id: user.account_id, username: user.username, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    return { user, token };
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) {
+        console.log('❌ Contraseña incorrecta para:', username);
+        throw new Error('Invalid password');
+      }
+
+      const secret = process.env.JWT_SECRET || 'AAAAAAAAABBBBBCCCC';
+      if (!secret) {
+        console.error('❗ JWT_SECRET no está definido.');
+        throw new Error('Server misconfiguration');
+      }
+
+      const token = jwt.sign(
+        { id: user.account_id, username: user.username, role: user.role },
+        secret,
+        { expiresIn: '1h' }
+      );
+
+      console.log('✅ Login exitoso:', username);
+      return { user, token };
+    } catch (err) {
+      console.error('⚠️ Error en login:', err.message);
+      throw err;
+    }
   }
 
   async recoverPassword(email) {
-    
     const user = await accountRepo.findByEmail(email);
-    if (!user) throw new Error("Email not found");
-    // Prox lógica para enviar correo de recuperación con token
+    if (!user) throw new Error('Email not found');
+    // Aquí agregar lógica para enviar email de recuperación
     return true;
   }
 
   async modifyProfile(account_id, profileData) {
-    // Obtener cuenta actual
     const account = await accountRepo.findById(account_id);
-    if (!account) throw new Error("Account not found");
+    if (!account) throw new Error('Account not found');
 
-    // Conservar valores anteriores si el nuevo valor no es válido
-  const email =
-    profileData.email !== null && profileData.email !== undefined && profileData.email !== ''
-      ? profileData.email
-      : account.email;
+    const email = profileData.email?.trim() || account.email;
+    const phone_number =
+      profileData.phone_number?.trim() || account.phone_number;
 
-     const phone_number =
-    profileData.phone_number !== null && profileData.phone_number !== undefined && profileData.phone_number !== ''
-      ? profileData.phone_number
-      : account.phone_number;
-
-
-     let password = account.password;
-      if (profileData.password) {
-        password = await bcrypt.hash(profileData.password, 10);
-      }
-      
-
+    let password = account.password;
+    if (profileData.password?.trim()) {
+      password = await bcrypt.hash(profileData.password, 10);
+    }
 
     const updatedAccount = {
-       ...account,
-        email,
-        phone_number,
-        password,
-        account_id
+      ...account,
+      email,
+      phone_number,
+      password,
+      account_id,
     };
+
     await accountRepo.update(updatedAccount);
 
-     // Si se proporcionó "content", actualizar el perfil
-  let updatedProfile = null;
-  if (profileData.content !== undefined) {
-    const profile = await profileRepo.findByAccountId(account_id);
-    if (profile) {
-      updatedProfile = await profileRepo.update({
-        profile_id: profile.profile_id,
-        content: profileData.content
-      });
+    let updatedProfile = null;
+    if (profileData.content !== undefined) {
+      const profile = await profileRepo.findByAccountId(account_id);
+      if (profile) {
+        updatedProfile = await profileRepo.update({
+          profile_id: profile.profile_id,
+          content: profileData.content,
+        });
+      }
     }
-  }
 
-  // Devuelve la cuenta y el perfil actualizado (si aplica)
-  return {
-    account: updatedAccount,
-    ...(updatedProfile && { profile: updatedProfile })
-  };
+    return {
+      account: updatedAccount,
+      ...(updatedProfile && { profile: updatedProfile }),
+    };
   }
 }

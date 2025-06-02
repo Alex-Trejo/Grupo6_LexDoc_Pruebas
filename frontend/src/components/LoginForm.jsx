@@ -13,10 +13,19 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const userData = await loginUser({ username, password });
-      login(userData);
-      if (userData.role === 'abogado') navigate('/dashboard-abogado');
-      else navigate('/dashboard-usuario');
+      const { user, token } = await loginUser({ username, password });
+
+      // Guardar los datos de sesión
+      login({ username: user.username, role: user.role, token });
+
+      // Redirigir según el rol
+      if (user.role === 'abogada') {
+        navigate('/dashboard-abogado');
+      } else if (user.role === 'admin') {
+        navigate('/dashboard-admin');
+      } else {
+        navigate('/dashboard-usuario');
+      }
     } catch (err) {
       setError('Credenciales inválidas');
     }
