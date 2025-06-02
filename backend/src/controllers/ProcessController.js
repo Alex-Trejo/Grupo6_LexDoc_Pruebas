@@ -6,7 +6,14 @@ export class ProcessController {
   async createProcess(req, res) {
     try {
       const processData = req.body;
-       processData.account_id = req.user.id;
+      processData.account_id = req.user.id;
+
+      // Validar todos los campos requeridos
+      if (!processData.title || !processData.type || !processData.offense || !processData.denounced || !processData.denouncer || !processData.province || !processData.carton) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+      }
+      
+
       const newProcess = await processService.createProcess(processData);
       res.status(201).json(newProcess);
     } catch (error) {
@@ -15,35 +22,83 @@ export class ProcessController {
   }
 
   async updateProcess(req, res) {
-    try {
-      const processData = req.body;
-      const updatedProcess = await processService.updateProcess(processData);
-      res.status(200).json(updatedProcess);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
+  try {
+    const { process_id } = req.params;        // ID viene por URL
+    const account_id = req.user.id;           // Usuario autenticado
+    const updateData = req.body;
 
-  async deleteProcess(req, res) {
-    try {
-      const { id } = req.params;
-      await processService.deleteProcess(id);
-      res.status(204).send();
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+    // Validar que el proceso existe y pertenece al usuario
+    await processService.getProcessById(process_id, account_id);
+
+    // Agregar el process_id a los datos a actualizar para el repo
+    updateData.process_id = Number(process_id);
+
+    // Actualizar proceso
+    const updatedProcess = await processService.updateProcess(updateData);
+
+    res.status(200).json({
+      message: "Proceso actualizado correctamente",
+      process: updatedProcess,
+    });
+  } catch (error) {
+    if (error.message === "Unauthorized access to this process") {
+      return res.status(403).json({ message: error.message });
     }
+    if (error.message === "Process not found") {
+      return res.status(404).json({ message: error.message });
+    }
+    res.status(400).json({ message: error.message });
   }
+}
+
+
+async deleteProcess(req, res) {
+  try {
+    const { process_id } = req.params;
+    const account_id = req.user.id;
+
+    const process = await processService.getProcessById(process_id, account_id);
+
+    // Verificar si existe el proceso y si pertenece al usuario autenticado
+    if (!process || Number(process.account_id) !== Number(account_id)) {
+      return res.status(403).json({ message: "No autorizado para eliminar este proceso." });
+    }
+
+    await processService.deleteProcess(process_id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+
+
 
   async getProcessById(req, res) {
     try {
       const { process_id } = req.params;
-      const process = await processService.getProcessById(process_id);
+      const account_id = req.user.id;
+
+      const process = await processService.getProcessById(process_id, account_id);
 
       res.status(200).json(process);
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
   }
+
+
+async getProcessesByAccountId(req, res) {
+  try {
+    const account_id = req.user.id; 
+    const processes = await processService.getProcessesByAccountId(account_id);
+    res.status(200).json(processes); 
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
   
 
   async addEvent(req, res) {

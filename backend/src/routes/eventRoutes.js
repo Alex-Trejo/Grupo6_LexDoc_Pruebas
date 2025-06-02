@@ -13,35 +13,36 @@ const eventController = new EventController();
  */
 
 // CRUD eventos
-/**
- * @swagger
- * /events:
- *   post:
- *     summary: Crear un evento
- *     tags: [Events]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               timeline_id:
- *                 type: integer
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *               date:
- *                 type: string
- *                 format: date
- *     responses:
- *       201:
- *         description: Evento creado exitosamente
- *       400:
- *         description: Error en los datos de entrada
- */
-router.post('/', eventController.createEvent.bind(eventController));
+//Endpoint para crear un evento no se usa debido a que se crea al crear una línea de tiempo(linetime)
+// /**
+//  * @swagger
+//  * /events:
+//  *   post:
+//  *     summary: Crear un evento
+//  *     tags: [Events]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               timeline_id:
+//  *                 type: integer
+//  *               title:
+//  *                 type: string
+//  *               description:
+//  *                 type: string
+//  *               date:
+//  *                 type: string
+//  *                 format: date
+//  *     responses:
+//  *       201:
+//  *         description: Evento creado exitosamente
+//  *       400:
+//  *         description: Error en los datos de entrada
+//  */
+// router.post('/', eventController.createEvent.bind(eventController));
 
 
 

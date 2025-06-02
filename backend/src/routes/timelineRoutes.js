@@ -1,7 +1,9 @@
 import express from 'express';
 import { TimelineController } from '../controllers/TimelineController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+router.use(authenticateToken);
 const timelineController = new TimelineController();
 
 
@@ -20,6 +22,8 @@ const timelineController = new TimelineController();
  *   post:
  *     summary: Crear un nuevo timeline para un proceso
  *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -29,8 +33,6 @@ const timelineController = new TimelineController();
  *             properties:
  *               process_id:
  *                 type: integer
- *               description:
- *                 type: string
  *             required:
  *               - process_id
  *     responses:
@@ -48,6 +50,8 @@ router.post('/', timelineController.createTimeline.bind(timelineController));
  *   get:
  *     summary: Obtener timeline por ID de proceso
  *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: process_id
@@ -58,6 +62,8 @@ router.post('/', timelineController.createTimeline.bind(timelineController));
  *     responses:
  *       200:
  *         description: Timeline encontrado
+ *       403:
+ *         description: No autorizado para ver este proceso
  *       404:
  *         description: Timeline no encontrado
  */
@@ -70,6 +76,8 @@ router.get('/process/:process_id', timelineController.getTimelineByProcess.bind(
  *   post:
  *     summary: Agregar un evento a un timeline
  *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: timeline_id
@@ -84,16 +92,14 @@ router.get('/process/:process_id', timelineController.getTimelineByProcess.bind(
  *           schema:
  *             type: object
  *             properties:
- *               event_title:
+ *               name:
  *                 type: string
- *               event_date:
- *                 type: string
- *                 format: date-time
+ *                 description: Título del evento
  *               description:
  *                 type: string
+ *                 description: Descripción del evento (opcional)
  *             required:
- *               - event_title
- *               - event_date
+ *               - name
  *     responses:
  *       201:
  *         description: Evento agregado al timeline
@@ -102,6 +108,7 @@ router.get('/process/:process_id', timelineController.getTimelineByProcess.bind(
  */
 router.post('/:timeline_id/event', timelineController.addEvent.bind(timelineController));
 
+
 // Modificar evento
 /**
  * @swagger
@@ -109,6 +116,8 @@ router.post('/:timeline_id/event', timelineController.addEvent.bind(timelineCont
  *   put:
  *     summary: Modificar un evento en un timeline
  *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -144,6 +153,8 @@ router.put('/event', timelineController.modifyEvent.bind(timelineController));
  *   delete:
  *     summary: Remover un evento de un timeline
  *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: event_id

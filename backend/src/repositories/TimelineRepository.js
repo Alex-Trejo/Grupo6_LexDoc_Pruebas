@@ -14,6 +14,13 @@ export class TimelineRepository {
     return rows[0];
   }
 
+  async findById(timeline_id) {
+    const query = `SELECT * FROM timeline WHERE timeline_id = $1`;
+    const { rows } = await pool.query(query, [timeline_id]);
+    return rows[0];
+  }
+
+
   async update(timeline) {
     const query = `UPDATE timeline SET number_events = $1 WHERE timeline_id = $2 RETURNING *`;
     const values = [timeline.number_events, timeline.timeline_id];

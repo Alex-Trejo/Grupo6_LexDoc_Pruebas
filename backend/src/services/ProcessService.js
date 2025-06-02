@@ -27,9 +27,19 @@ export class ProcessService {
     return await processRepo.delete(process_id);
   }
 
-  async getProcessById(process_id) {
+
+async getProcessesByAccountId(account_id) {
+  return await processRepo.findByAccountId(account_id);
+}
+
+
+  async getProcessById(process_id, account_id) {
     const process = await processRepo.findById(process_id);
     if (!process) throw new Error('Process not found');
+
+    if (process.account_id !== account_id) {
+      throw new Error('Unauthorized access to this process');
+    }
 
     const timeline = await timelineRepo.findByProcessId(process_id);
     const events = await eventRepo.findByTimelineId(timeline.timeline_id);
