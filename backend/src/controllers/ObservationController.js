@@ -76,7 +76,7 @@ export class ObservationController {
     }
 
     res.status(200).json(observations);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 }

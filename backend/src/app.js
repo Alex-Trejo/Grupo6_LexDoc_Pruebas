@@ -16,7 +16,28 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+// Middleware CORS seguro
+const allowedOrigins = [
+  'http://localhost:3000', 
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Not allowed by CORS: ${origin}`));
+    }
+  },
+  optionsSuccessStatus: 200,
+  credentials: true // si usas cookies/sesiones, de lo contrario puedes omitir
+};
+
+app.use(cors(corsOptions));
+
+// Eliminar encabezado 'X-Powered-By' para no divulgar versión de Express
+app.disable('x-powered-by');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

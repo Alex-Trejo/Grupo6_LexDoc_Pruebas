@@ -19,9 +19,12 @@ export class AccountController {
       }
       
       //Validare email format
-      if (account.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(account.email)) {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (account.email && !emailRegex.test(account.email)) {
         return res.status(400).json({ message: 'Invalid email format' });
       }
+
       // Create the account
       const newAccount = await accountService.register(account);
       res.status(201).json(newAccount);
@@ -57,8 +60,8 @@ export class AccountController {
 
             // Validar formato y dominio del correo
       if (profileData.email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const allowedDomains = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'espe.ec.edu.ec']; 
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const allowedDomains = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'espe.ec.edu.ec'];
 
         if (!emailRegex.test(profileData.email)) {
           return res.status(400).json({ message: 'Invalid email format' });
@@ -69,6 +72,7 @@ export class AccountController {
           return res.status(400).json({ message: `Email domain '${domain}' is not allowed` });
         }
       }
+
 
 
       // Validate phone number format if provided
