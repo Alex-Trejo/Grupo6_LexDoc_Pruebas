@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 export default function RegisterForms({ onRegister }) {
   const [formData, setFormData] = useState({
@@ -22,7 +23,10 @@ export default function RegisterForms({ onRegister }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md w-full bg-gray-800 p-6 rounded-lg shadow-md text-white space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md w-full bg-gray-800 p-6 rounded-lg shadow-md text-white space-y-4"
+    >
       <input
         type="text"
         name="username"
@@ -59,7 +63,7 @@ export default function RegisterForms({ onRegister }) {
         className="w-full p-2 border rounded bg-gray-700 text-white placeholder-gray-400"
       />
       <input type="hidden" name="role" value={formData.role} />
-      
+
       <button
         type="submit"
         className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
@@ -67,7 +71,6 @@ export default function RegisterForms({ onRegister }) {
         Registrarse
       </button>
 
-      {/* Enlace para volver al login */}
       <div className="text-center mt-2">
         <a href="/" className="text-sm text-blue-400 hover:underline">
           ¿Ya tienes una cuenta? Inicia sesión
@@ -76,3 +79,8 @@ export default function RegisterForms({ onRegister }) {
     </form>
   );
 }
+
+// ✅ Validación de props
+RegisterForms.propTypes = {
+  onRegister: PropTypes.func.isRequired,
+};
