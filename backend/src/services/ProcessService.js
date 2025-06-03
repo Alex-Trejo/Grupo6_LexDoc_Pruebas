@@ -2,15 +2,11 @@ import { ProcessRepository } from '../repositories/ProcessRepository.js';
 import { TimelineRepository } from '../repositories/TimelineRepository.js';
 import { EventRepository } from '../repositories/EventRepository.js';
 import { ObservationRepository } from '../repositories/ObservationRepository.js';
-import { EvidenceRepository } from '../repositories/EvidenceRepository.js';
-import { LegalAdviceRepository } from '../repositories/LegalAdviceRepository.js';
 
 const processRepo = new ProcessRepository();
 const timelineRepo = new TimelineRepository();
 const eventRepo = new EventRepository();
 const observationRepo = new ObservationRepository();
-const evidenceRepo = new EvidenceRepository();
-const adviceRepo = new LegalAdviceRepository();
 
 export class ProcessService {
   async createProcess(processData) {
@@ -44,8 +40,7 @@ async getProcessesByAccountId(account_id) {
     const timeline = await timelineRepo.findByProcessId(process_id);
     const events = await eventRepo.findByTimelineId(timeline.timeline_id);
     const observations = await observationRepo.findByProcessId(process_id);
-    const evidences = await evidenceRepo.findByProcessId(process_id);
-    const advices = await adviceRepo.findByProcessId(process_id);
+   
 
     return {
       ...process,
@@ -92,29 +87,7 @@ async getProcessesByAccountId(account_id) {
     return await observationRepo.delete(observation_id);
   }
 
-  // Métodos para evidencias
-  async addEvidence(evidence) {
-    return await evidenceRepo.create(evidence);
-  }
+ 
 
-  async updateEvidence(evidence) {
-    return await evidenceRepo.update(evidence);
-  }
-
-  async removeEvidence(evidence_id) {
-    return await evidenceRepo.delete(evidence_id);
-  }
-
-  // Métodos para asesoría legal
-  async addLegalAdvice(advice) {
-    return await adviceRepo.create(advice);
-  }
-
-  async updateLegalAdvice(advice) {
-    return await adviceRepo.update(advice);
-  }
-
-  async removeLegalAdvice(advice_id) {
-    return await adviceRepo.delete(advice_id);
-  }
+ 
 }

@@ -20,6 +20,11 @@ export class TimelineRepository {
     return rows[0];
   }
 
+  async decrementEventCount(timeline_id) {
+  const query = `UPDATE timeline SET number_events = number_events - 1 WHERE timeline_id = $1`;
+  await pool.query(query, [timeline_id]);
+  }
+
 
   async update(timeline) {
     const query = `UPDATE timeline SET number_events = $1 WHERE timeline_id = $2 RETURNING *`;
@@ -32,4 +37,10 @@ export class TimelineRepository {
     const query = `DELETE FROM timeline WHERE timeline_id = $1`;
     await pool.query(query, [timeline_id]);
   }
+
+  async deleteTimeline(timeline_id) {
+  const query = `DELETE FROM timeline WHERE timeline_id = $1`;
+  await pool.query(query, [timeline_id]);
+}
+
 }

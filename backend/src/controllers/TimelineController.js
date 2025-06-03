@@ -45,21 +45,53 @@ export class TimelineController {
   async removeEvent(req, res) {
     try {
       const { event_id } = req.params;
-      await timelineService.removeEvent(event_id);
-      res.status(204).send();
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+      const account_id = req.user.id;
+      await timelineService.removeEvent(parseInt(event_id), account_id);
+      res.status(200).json({ message: "Eliminación de evento con éxito" });
+    }  catch (error) {
+    if (error.message === 'Evento no encontrado' || error.message === 'Timeline no encontrado') {
+      return res.status(404).json({ message: error.message });
     }
+    if (error.message === 'No tienes permiso para eliminar este evento') {
+      return res.status(403).json({ message: error.message });
+    }
+    res.status(400).json({ message: error.message });
   }
+  }
+
+
+  async deleteTimeline(req, res) {
+  try {
+    const timeline_id = parseInt(req.params.timeline_id);
+    const account_id = req.user.id;
+
+    await timelineService.deleteTimeline(timeline_id, account_id);
+    return res.status(204).json({ message: "Timeline eliminado correctamente" });
+  } catch (error) {
+    if (error.message === 'Timeline no encontrado') {
+      return res.status(404).json({ message: error.message });
+    }
+    if (error.message === 'No tienes permiso para eliminar este timeline') {
+      return res.status(403).json({ message: error.message });
+    }
+    return res.status(400).json({ message: error.message });
+  }
+}
+
 
   async modifyEvent(req, res) {
     try {
       const eventData = req.body;
-      const updatedEvent = await timelineService.modifyEvent(eventData);
+      const account_id = req.user.id;
+
+      const updatedEvent = await timelineService.modifyEvent(eventData, account_id);
       res.status(200).json(updatedEvent);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+    if (error.message === 'Evento no encontrado' || error.message === 'Timeline no encontrado') {
+      return res.status(404).json({ message: error.message });
     }
+    res.status(400).json({ message: error.message });
+  }
   }
 
   async getTimelineByProcess(req, res) {

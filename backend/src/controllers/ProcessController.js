@@ -65,7 +65,7 @@ async deleteProcess(req, res) {
     }
 
     await processService.deleteProcess(process_id);
-    res.status(204).send();
+    res.status(204).json({ message: "Proceso eliminado correctamente." });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

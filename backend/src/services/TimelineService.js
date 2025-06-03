@@ -60,15 +60,83 @@ export class TimelineService {
     return event;
   }
 
-  async modifyEvent(eventData) {
-    return await eventRepo.update(eventData);
+  async modifyEvent(eventData, account_id) {
+    const { event_id, event_title,  description } = eventData;
+
+    // 1. Validar existencia del evento
+    const existingEvent = await eventRepo.findById(event_id);
+    if (!existingEvent) {
+      throw new Error('Evento no encontrado');
+    }
+
+    // 2. Obtener timeline
+    const timeline = await timelineRepo.findById(existingEvent.timeline_id);
+    if (!timeline) {
+      throw new Error('Timeline no encontrado');
+    }
+
+    // 3. Validar que el proceso pertenece al usuario autenticado
+    const process = await processRepo.findById(timeline.process_id);
+    if (!process || process.account_id !== account_id) {
+      throw new Error('No tienes permiso para modificar este evento');
+    }
+
+    // 4. Ejecutar UPDATE con COALESCE (fecha actualizada si no se proporciona)
+    const now = new Date();
+
+    const updatedEvent = await eventRepo.updatePartial({
+      event_id,
+      name: event_title && event_title.trim() !== '' ? event_title : null,
+     description: description && description.trim() !== '' ? description : null,
+      date: now
+    });
+
+    return updatedEvent;
   }
 
   async getTimelineByProcessId(process_id) {
     return await timelineRepo.findByProcessId(process_id);
   }
 
-  async removeEvent(event_id) {
-    return await eventRepo.delete(event_id);
+  async removeEvent(event_id, account_id) {
+    const existingEvent = await eventRepo.findById(event_id);
+  if (!existingEvent) throw new Error('Evento no encontrado');
+
+  const timeline = await timelineRepo.findById(existingEvent.timeline_id);
+  if (!timeline) throw new Error('Timeline no encontrado');
+
+  const process = await processRepo.findById(timeline.process_id);
+  if (!process || process.account_id !== account_id) {
+    throw new Error('No tienes permiso para eliminar este evento');
   }
+
+  // Eliminar evento
+  await eventRepo.delete(event_id);
+
+  // Actualizar number_events
+  await timelineRepo.decrementEventCount(timeline.timeline_id);
+
+  // Reordenar los eventos que quedan (ajustar campo "order")
+  await eventRepo.reorderTimelineEvents(timeline.timeline_id);
+  }
+
+
+
+  async deleteTimeline(timeline_id, account_id) {
+  // 1. Validar existencia del timeline
+  const timeline = await timelineRepo.findById(timeline_id);
+  if (!timeline) {
+    throw new Error('Timeline no encontrado');
+  }
+
+  // 2. Verificar propiedad del proceso
+  const process = await processRepo.findById(timeline.process_id);
+  if (!process || process.account_id !== account_id) {
+    throw new Error('No tienes permiso para eliminar este timeline');
+  }
+
+  // 3. Eliminar el timeline
+  await timelineRepo.deleteTimeline(timeline_id);
+}
+
 }

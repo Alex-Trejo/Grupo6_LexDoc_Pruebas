@@ -129,9 +129,6 @@ router.post('/:timeline_id/event', timelineController.addEvent.bind(timelineCont
  *                 type: integer
  *               event_title:
  *                 type: string
- *               event_date:
- *                 type: string
- *                 format: date-time
  *               description:
  *                 type: string
  *             required:
@@ -163,11 +160,44 @@ router.put('/event', timelineController.modifyEvent.bind(timelineController));
  *         required: true
  *         description: ID del evento a eliminar
  *     responses:
- *       200:
+ *       204:
  *         description: Evento eliminado correctamente
+ *       403:
+ *         description: No tienes permiso para eliminar este evento
  *       404:
  *         description: Evento no encontrado
+ *       400:
+ *         description: Error al eliminar el evento
  */
 router.delete('/event/:event_id', timelineController.removeEvent.bind(timelineController));
+
+/**
+ * @swagger
+ * /timelines/{timeline_id}:
+ *   delete:
+ *     summary: Eliminar un timeline y todos sus eventos
+ *     tags: [Timelines]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: timeline_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del timeline a eliminar
+ *     responses:
+ *       204:
+ *         description: Timeline eliminado correctamente
+ *       403:
+ *         description: No tienes permiso para eliminar este timeline
+ *       404:
+ *         description: Timeline no encontrado
+ */
+router.delete('/:timeline_id', timelineController.deleteTimeline.bind(timelineController));
+
+
+
+
 
 export default router;
