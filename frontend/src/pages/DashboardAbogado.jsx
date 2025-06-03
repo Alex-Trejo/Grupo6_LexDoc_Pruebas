@@ -10,6 +10,20 @@ export default function DashboardAbogada() {
   const [newObservationText, setNewObservationText] = useState('');
   const [editObservationId, setEditObservationId] = useState(null);
   const [editObservationText, setEditObservationText] = useState('');
+  const [editProcessId, setEditProcessId] = useState(null);
+  const [editProcessTitle, setEditProcessTitle] = useState('');
+  const [newProcess, setNewProcess] = useState({
+    title: '',
+    type: '',
+    offense: '',
+    last_update: '',
+    denounced: '',
+    denouncer: '',
+    province: '',
+    carton: '',
+  });
+  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,8 +47,91 @@ export default function DashboardAbogada() {
       }
     };
 
+
     fetchData();
   }, [auth.token]);
+  const createProcess = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/processes', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProcess),
+      });
+  
+      if (!response.ok) throw new Error('No se pudo crear el proceso');
+  
+      // Limpia el formulario
+      setNewProcess({
+        title: '',
+        type: '',
+        offense: '',
+        last_update: '',
+        denounced: '',
+        denouncer: '',
+        province: '',
+        carton: '',
+      });
+  
+      // Recarga los procesos
+      const updated = await fetch('http://localhost:3000/api/processes/', {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
+      const data = await updated.json();
+      setProcesses(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  const updateProcess = async (processId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/processes/${processId}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: editProcessTitle,
+        }),
+      });
+  
+      if (!response.ok) throw new Error('Error al actualizar el proceso');
+  
+      setEditProcessId(null);
+      setEditProcessTitle('');
+  
+      // recargar procesos
+      const res = await fetch('http://localhost:3000/api/processes/', {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
+      const data = await res.json();
+      setProcesses(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  const deleteProcess = async (processId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/processes/${processId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+  
+      if (!response.ok && response.status !== 204) throw new Error('Error al eliminar el proceso');
+  
+      // actualizar lista sin ese proceso
+      setProcesses((prev) => prev.filter((p) => p.process_id !== processId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchObservations = async (processId) => {
     try {
@@ -130,7 +227,36 @@ export default function DashboardAbogada() {
     <div className="p-6 text-white flex flex-col items-center justify-center min-h-screen bg-gray-900">
       <h1 className="text-4xl font-bold mb-6">¡Bienvenida, Abogada!</h1>
       <p className="text-lg mb-4">Este es tu panel de control donde podrás gestionar tus procesos legales.</p>
+      <div className="p-4 border rounded mb-4 bg-gray-800 text-white">
+  <h2 className="text-lg font-bold mb-2">Crear nuevo proceso</h2>
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      createProcess();
+    }}
+    className="grid grid-cols-2 gap-2"
+  >
+    {Object.keys(newProcess).map((field) => (
+      <input
+        key={field}
+        type={field === 'last_update' ? 'datetime-local' : 'text'}
+        placeholder={field}
+        value={newProcess[field]}
+        onChange={(e) =>
+          setNewProcess({ ...newProcess, [field]: e.target.value })
+        }
+        className="bg-gray-700 text-white text-sm p-1 rounded placeholder-gray-400"
+      />
+    ))}
 
+    <button
+      type="submit"
+      className="col-span-2 bg-green-500 text-white text-sm py-1 rounded"
+    >
+      Crear proceso
+    </button>
+  </form>
+</div>
       {loading ? (
         <p className="text-yellow-400 animate-pulse">Cargando tus datos...</p>
       ) : processes.length === 0 ? (
@@ -157,6 +283,47 @@ export default function DashboardAbogada() {
               >
                 Ver Observaciones
               </button>
+              {editProcessId === process.process_id ? (
+  <div className="mt-2">
+    <input
+      type="text"
+      value={editProcessTitle}
+      onChange={(e) => setEditProcessTitle(e.target.value)}
+      className="text-black text-xs p-1 rounded w-2/3"
+    />
+    <button
+      onClick={() => updateProcess(process.process_id)}
+      className="text-green-400 text-xs ml-2"
+    >
+      Guardar
+    </button>
+    <button
+      onClick={() => setEditProcessId(null)}
+      className="text-red-400 text-xs ml-2"
+    >
+      Cancelar
+    </button>
+  </div>
+) : (
+  <div className="mt-2">
+    <button
+      onClick={() => {
+        setEditProcessId(process.process_id);
+        setEditProcessTitle(process.title);
+      }}
+      className="text-yellow-400 text-xs mr-2"
+    >
+      Editar Proceso
+    </button>
+    <button
+      onClick={() => deleteProcess(process.process_id)}
+      className="text-red-400 text-xs"
+    >
+      Eliminar Proceso
+    </button>
+  </div>
+)}
+
 
               {selectedProcessId === process.process_id && (
                 <div className="mt-2 p-2 bg-gray-700 rounded">

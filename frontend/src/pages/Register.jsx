@@ -18,10 +18,7 @@ export default function Register() {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">
-        Registro de Usuario
-      </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <RegisterForms onRegister={handleRegister} />
     </div>
   );

@@ -93,29 +93,8 @@ function DashboardUsuario() {
                 Provincia: {proceso.province}
               </p>
 
-              {/* Evidencias */}
-              {evidencias[proceso.process_id] && (
-                <div className="mt-4">
-                  <h4 className="font-medium">Evidencias:</h4>
-                  <ul className="list-disc list-inside text-gray-300">
-                    {evidencias[proceso.process_id].map((ev) => (
-                      <li key={ev.evidence_id}>
-                        {ev.description || 'Sin descripción'}{' '}
-                        {ev.file_url && (
-                          <a
-                            href={ev.file_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 underline"
-                          >
-                            Ver archivo
-                          </a>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+
+
 
               {/* Likes */}
               <div className="mt-4">
