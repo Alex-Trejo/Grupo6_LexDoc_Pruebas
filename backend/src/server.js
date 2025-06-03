@@ -1,11 +1,8 @@
-// src/server.js
-import app from "./app.js";
-import dotenv from "dotenv";
+// server.js
+import app from "./src/app.js";
 
-dotenv.config();
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor backend escuchando en puerto ${PORT}`);
+const server = app.listen(process.env.PORT || 3000, () => {
+  console.log("Server running");
 });
+
+export default server;

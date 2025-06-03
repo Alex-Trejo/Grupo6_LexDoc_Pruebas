@@ -9,7 +9,7 @@ import { swaggerUi, swaggerSpec } from "./swagger.js";
 import accountRoutes from "./routes/accountRoutes.js";
 import processRoutes from "./routes/processRoutes.js";
 import timelineRoutes from "./routes/timelineRoutes.js";
-import observationRoutes from "./routes/observationRoutes.js";
+
 
 dotenv.config();
 
@@ -54,14 +54,11 @@ app.use(async (req, res, next) => {
 
 // Rutas
 app.use("/api", routes);
-app.use("/accounts", accountRoutes); // esta ruta ahora se configura aquí directamente
-//procesees
+app.use("/accounts", accountRoutes);
 app.use("/processes", processRoutes);
-// timelines
 app.use("/timelines", timelineRoutes);
-// Observaciones
 
-app.use("/observations", observationRoutes);
+
 // Documentación Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -77,6 +74,7 @@ app.use((req, res) => {
 
 // Middleware de errores generales
 app.use((err, req, res) => {
+  // faltaba el 'next'
   console.error("Error interno:", err);
   res.status(500).json({ error: "Error interno del servidor" });
 });
