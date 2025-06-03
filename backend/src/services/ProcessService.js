@@ -85,6 +85,11 @@ async getProcessesByAccountId(account_id) {
     return await observationRepo.delete(observation_id);
   }
 
+  async existsById(process_id) {
+  const process = await processRepo.findById(process_id);
+  return !!process;
+}
+
  
 
  

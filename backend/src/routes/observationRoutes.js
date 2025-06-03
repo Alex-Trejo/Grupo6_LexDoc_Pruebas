@@ -3,7 +3,7 @@ import { ObservationController } from '../controllers/ObservationController.js';
 import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-router.use(authenticateToken);
+//router.use(authenticateToken);
 const observationController = new ObservationController();
 
 /**
@@ -50,7 +50,7 @@ const observationController = new ObservationController();
  *      404:
  *         description: Proceso no encontrado
  */
-router.post('/', observationController.addObservation.bind(observationController));
+router.post('/', authenticateToken, observationController.addObservation.bind(observationController));
 
 
 
@@ -58,10 +58,8 @@ router.post('/', observationController.addObservation.bind(observationController
  * @swagger
  * /observations/process/{process_id}:
  *   get:
- *     summary: Obtener observaciones por ID de proceso
+ *     summary: Obtener observaciones por ID de proceso (Publico)
  *     tags: [Observations]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: process_id
@@ -92,7 +90,7 @@ router.post('/', observationController.addObservation.bind(observationController
  *                     type: integer
  *                     example: 9
  *       404:
- *         description: No se encontraron observaciones para el proceso
+ *         description: Proceso no encontrado o no hay observaciones para el proceso
  *         content:
  *           application/json:
  *             schema:
@@ -108,10 +106,10 @@ router.get('/process/:process_id', observationController.getObservationsByProces
  * @swagger
  * /observations:
  *   put:
- *     summary: Modificar una observación existente
+ *     summary: Modificar una observación existente (solo si es dueño del proceso)
  *     tags: [Observations]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -121,18 +119,33 @@ router.get('/process/:process_id', observationController.getObservationsByProces
  *             properties:
  *               observation_id:
  *                 type: integer
- *               observation_text:
+ *                 example: 4
+ *               title:
  *                 type: string
+ *                 nullable: true
+ *                 example: "Nuevo título de observación"
+ *               content:
+ *                 type: string
+ *                 nullable: true
+ *                 example: "Texto actualizado de la observación"
  *             required:
  *               - observation_id
- *               - observation_text
  *     responses:
  *       200:
  *         description: Observación modificada correctamente
  *       400:
- *         description: Datos inválidos
+ *         description: Datos inválidos o sin permisos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "No autorizado para modificar esta observación"
  */
-router.put('/', observationController.modifyObservation.bind(observationController));
+
+router.put('/', authenticateToken,observationController.modifyObservation.bind(observationController));
 
 
 /**
@@ -142,7 +155,7 @@ router.put('/', observationController.modifyObservation.bind(observationControll
  *     summary: Eliminar una observación por ID
  *     tags: [Observations]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: observation_id
@@ -153,9 +166,21 @@ router.put('/', observationController.modifyObservation.bind(observationControll
  *     responses:
  *       200:
  *         description: Observación eliminada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Observación eliminada correctamente
+ *       400:
+ *         description: Error en la solicitud
+ *       403:
+ *         description: No autorizado para eliminar esta observación
  *       404:
  *         description: No se encontró la observación
  */
-router.delete('/:observation_id', observationController.deleteObservation.bind(observationController));
+router.delete('/:observation_id', authenticateToken,observationController.deleteObservation.bind(observationController));
 
 export default router;
