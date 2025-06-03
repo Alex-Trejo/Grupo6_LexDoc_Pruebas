@@ -146,6 +146,47 @@ router.post('/recover-password', accountController.recoverPassword.bind(accountC
 
 router.put('/profile', authenticateToken, accountController.modifyProfile.bind(accountController));
 
+
+
+/**
+ * @swagger
+ * /accounts/profile:
+ *   get:
+ *     summary: Obtener perfil del usuario autenticado
+ *     tags: [Accounts]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Datos del perfil obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 account_id:
+ *                   type: integer
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 phone_number:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 profile:
+ *                   type: object
+ *                   properties:
+ *                     content:
+ *                       type: string
+ *       401:
+ *         description: Token no válido o no proporcionado
+ *       404:
+ *         description: Usuario no encontrado
+ */
+router.get('/profile', authenticateToken, accountController.getProfile.bind(accountController));
+
+
 export default router;
 
 

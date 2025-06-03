@@ -105,5 +105,10 @@ export class AccountService {
     ...(updatedProfile && { profile: updatedProfile })
   };
   }
+
+  async getProfile(account_id) {
+  return await accountRepo.findWithProfile(account_id);
+}
+
 }
 

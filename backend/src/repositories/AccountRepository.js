@@ -37,5 +37,19 @@ export class AccountRepository {
   
 }
 
+async findWithProfile(account_id) {
+  const query = `
+    SELECT 
+      a.account_id, a.username, a.email, a.phone_number, a.role,
+      p.content
+    FROM account a
+    LEFT JOIN profile p ON a.account_id = p.account_id
+    WHERE a.account_id = $1
+  `;
+  const { rows } = await pool.query(query, [account_id]);
+  return rows[0];
+}
+
+
 
 }

@@ -87,4 +87,22 @@ export class AccountController {
       res.status(400).json({ message: error.message });
     }
   }
+
+async getProfile(req, res) {
+  try {
+    const account_id = req.user.id;
+
+    const profileData = await accountService.getProfile(account_id);
+
+    if (!profileData) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    res.status(200).json(profileData);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+
 }
