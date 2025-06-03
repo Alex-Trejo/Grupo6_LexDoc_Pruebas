@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 
 export default function RegisterForms({ onRegister }) {
   const [formData, setFormData] = useState({
@@ -71,6 +70,7 @@ export default function RegisterForms({ onRegister }) {
         Registrarse
       </button>
 
+      {/* Enlace para volver al login */}
       <div className="text-center mt-2">
         <a href="/" className="text-sm text-blue-400 hover:underline">
           ¿Ya tienes una cuenta? Inicia sesión
@@ -79,8 +79,3 @@ export default function RegisterForms({ onRegister }) {
     </form>
   );
 }
-
-// ✅ Validación de props
-RegisterForms.propTypes = {
-  onRegister: PropTypes.func.isRequired,
-};
