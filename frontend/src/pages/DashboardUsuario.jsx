@@ -1,25 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { Link, BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function DashboardUsuario() {
+  const { auth } = useAuth();
   const [procesos, setProcesos] = useState([]);
   const [evidencias, setEvidencias] = useState({});
   const [likes, setLikes] = useState({});
   const [comentarios, setComentarios] = useState({});
 
   useEffect(() => {
-    // 1. Obtener todos los procesos
-    fetch('http://localhost:3000/api/processes')
+    if (!auth?.token) return; // si no hay token, no hace fetch
+
+    fetch('http://localhost:3000/api/processes', {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log('Procesos cargados:', data);
         setProcesos(data);
 
-        // 2. Por cada proceso, obtener sus evidencias
         data.forEach((proceso) => {
-          fetch(
-            `http://localhost:3000/api/evidences/process/${proceso.process_id}`
-          )
+          fetch(`http://localhost:3000/api/evidences/process/${proceso.process_id}`, {
+            headers: {
+              Authorization: `Bearer ${auth.token}`,
+            },
+          })
             .then((res) => res.json())
             .then((evids) => {
               setEvidencias((prev) => ({
@@ -31,7 +39,7 @@ function DashboardUsuario() {
         });
       })
       .catch((err) => console.error('Error al obtener procesos', err));
-  }, []);
+  }, [auth?.token]);
 
   const manejarLike = (id) => {
     setLikes((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));

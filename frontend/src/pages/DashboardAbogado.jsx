@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
-function DashboardAbogado() {
-  const [processes, setProcesses] = useState([]);
+export default function DashboardAbogada() {
+  const { auth } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/processes') // Cambia a tu ruta real
-      .then((res) => res.json())
-      .then((data) => setProcesses(data))
-      .catch((err) => console.error('Error al cargar procesos', err));
+    // Aquí puedes poner fetchData si quieres, pero por ahora solo el loading
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000); // simulamos carga 1s
   }, []);
 
   return (
-    <div>
-      <h2>Dashboard de Abogada</h2>
-      <ul>
-        {processes.map((process) => (
-          <li key={process.process_id}>
-            <strong>{process.title}</strong> - {process.type} -{' '}
-            {process.province}
-          </li>
-        ))}
-      </ul>
+    <div className="p-6 text-white flex flex-col items-center justify-center min-h-screen bg-gray-900">
+      <h1 className="text-4xl font-bold mb-6">¡Bienvenida, Abogada!</h1>
+      <p className="text-lg mb-4">Este es tu panel de control donde podrás gestionar tus procesos legales.</p>
+
+      {loading ? (
+        <p className="text-yellow-400 animate-pulse">Cargando tus datos...</p>
+      ) : (
+        <div className="bg-gray-800 p-6 rounded shadow w-full max-w-xl text-center">
+          <p className="mb-2">No tienes procesos asignados aún.</p>
+          <p className="text-sm text-gray-400">Cuando tengas procesos asignados, aquí los podrás ver.</p>
+        </div>
+      )}
     </div>
   );
 }
-
-export default DashboardAbogado;
