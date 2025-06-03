@@ -151,8 +151,6 @@ router.delete("/:process_id",  processController.deleteProcess.bind(processContr
  *   get:
  *     summary: Obtener todos los procesos o filtrar por estado, fecha o nombre
  *     tags: [Processes]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: status

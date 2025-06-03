@@ -1,7 +1,9 @@
 import express from 'express';
 import { ObservationController } from '../controllers/ObservationController.js';
+import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+router.use(authenticateToken);
 const observationController = new ObservationController();
 
 /**
@@ -20,6 +22,8 @@ const observationController = new ObservationController();
  *   post:
  *     summary: Crear una nueva observación
  *     tags: [Observations]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -29,16 +33,22 @@ const observationController = new ObservationController();
  *             properties:
  *               process_id:
  *                 type: integer
- *               observation_text:
+ *               title:
+ *                 type: string
+ *               content:
  *                 type: string
  *             required:
  *               - process_id
- *               - observation_text
+ *               - content
  *     responses:
- *       201:
+ *      201:
  *         description: Observación creada correctamente
- *       400:
+ *      400:
  *         description: Datos inválidos
+ *      403:
+ *         description: No tienes permiso para agregar observaciones a este proceso
+ *      404:
+ *         description: Proceso no encontrado
  */
 router.post('/', observationController.addObservation.bind(observationController));
 
@@ -50,6 +60,8 @@ router.post('/', observationController.addObservation.bind(observationController
  *   get:
  *     summary: Obtener observaciones por ID de proceso
  *     tags: [Observations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: process_id
@@ -60,8 +72,35 @@ router.post('/', observationController.addObservation.bind(observationController
  *     responses:
  *       200:
  *         description: Lista de observaciones para el proceso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   observation_id:
+ *                     type: integer
+ *                     example: 1
+ *                   title:
+ *                     type: string
+ *                     example: "Observación importante"
+ *                   content:
+ *                     type: string
+ *                     example: "Detalle de la observación..."
+ *                   process_id:
+ *                     type: integer
+ *                     example: 9
  *       404:
  *         description: No se encontraron observaciones para el proceso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "No se encontraron observaciones para el proceso"
  */
 router.get('/process/:process_id', observationController.getObservationsByProcess.bind(observationController));
 
@@ -71,6 +110,8 @@ router.get('/process/:process_id', observationController.getObservationsByProces
  *   put:
  *     summary: Modificar una observación existente
  *     tags: [Observations]
+ *     security:
+ *      - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -100,6 +141,8 @@ router.put('/', observationController.modifyObservation.bind(observationControll
  *   delete:
  *     summary: Eliminar una observación por ID
  *     tags: [Observations]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: observation_id

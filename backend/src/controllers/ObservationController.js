@@ -4,14 +4,20 @@ const observationService = new ObservationService();
 
 export class ObservationController {
   async addObservation(req, res) {
-    try {
-      const observationData = req.body;
-      const observation = await observationService.addObservation(observationData);
-      res.status(201).json(observation);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+  try {
+    const { process_id, title, content } = req.body;
+    const account_id = req.user.id;
+
+    const observation = await observationService.createObservation({ process_id, title, content }, account_id);
+    res.status(201).json(observation);
+  } catch (error) {
+    if (error.message === 'Proceso no encontrado' || error.message === 'No autorizado') {
+      return res.status(403).json({ message: error.message });
     }
+    res.status(400).json({ message: error.message });
   }
+}
+
 
   async modifyObservation(req, res) {
     try {

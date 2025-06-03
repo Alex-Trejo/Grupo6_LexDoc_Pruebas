@@ -47,8 +47,6 @@ async getProcessesByAccountId(account_id) {
       timeline,
       events,
       observations,
-      evidences,
-      advices,
     };
   }
 
