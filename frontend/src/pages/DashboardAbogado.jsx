@@ -16,7 +16,7 @@ export default function DashboardAbogada() {
       try {
         const response = await fetch('http://localhost:3000/api/processes/', {
           headers: {
-            Authorization: Bearer ${auth.token},
+            Authorization: `Bearer ${auth.token}`,
           },
         });
 
@@ -38,9 +38,9 @@ export default function DashboardAbogada() {
 
   const fetchObservations = async (processId) => {
     try {
-      const response = await fetch(http://localhost:3000/api/observations/process/${processId}, {
+      const response = await fetch(`http://localhost:3000/api/observations/process/${processId}`, {
         headers: {
-          Authorization: Bearer ${auth.token},
+          Authorization: `Bearer ${auth.token}`,
         },
       });
 
@@ -61,7 +61,7 @@ export default function DashboardAbogada() {
       const response = await fetch('http://localhost:3000/api/observations', {
         method: 'POST',
         headers: {
-          Authorization: Bearer ${auth.token},
+          Authorization: `Bearer ${auth.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -83,10 +83,10 @@ export default function DashboardAbogada() {
 
   const deleteObservation = async (observationId, processId) => {
     try {
-      const response = await fetch(http://localhost:3000/api/observations/${observationId}, {
+      const response = await fetch(`http://localhost:3000/api/observations/${observationId}`, {
         method: 'DELETE',
         headers: {
-          Authorization: Bearer ${auth.token},
+          Authorization: `Bearer ${auth.token}`,
         },
       });
 
@@ -105,7 +105,7 @@ export default function DashboardAbogada() {
       const response = await fetch('http://localhost:3000/api/observations', {
         method: 'PUT',
         headers: {
-          Authorization: Bearer ${auth.token},
+          Authorization: `Bearer ${auth.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -162,7 +162,6 @@ export default function DashboardAbogada() {
                 <div className="mt-2 p-2 bg-gray-700 rounded">
                   <h3 className="text-sm font-bold">Observaciones:</h3>
 
-                  {/* Nueva observación */}
                   <div className="my-2">
                     <input
                       type="text"
@@ -179,7 +178,6 @@ export default function DashboardAbogada() {
                     </button>
                   </div>
 
-                  {/* Lista de observaciones */}
                   {observations[process.process_id]?.length === 0 ? (
                     <p className="text-gray-400 text-xs">No hay observaciones.</p>
                   ) : (
