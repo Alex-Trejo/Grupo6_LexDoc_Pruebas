@@ -25,7 +25,7 @@ const swaggerOptions = {
     },
     // NO agregues "security" aquí para no hacerlo global
   },
-  apis: ['./src/routes/*.js'],
+  apis: ['./routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
