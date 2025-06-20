@@ -1,8 +1,9 @@
-// server.js
 import app from './app.js';
 
-const server = app.listen(process.env.PORT || 3000, () => {
+const PORT = process.env.PORT || 3000;
 
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Servidor escuchando en el puerto ${PORT}`);
 });
 
 export default server;
