@@ -2,14 +2,22 @@ import pool from '../config/db.js';
 
 export class ObservationRepository {
   async create(observation) {
+<<<<<<< HEAD
     const query = `INSERT INTO observation (title, content, process_id) VALUES ($1, $2, $3) RETURNING *`;
+=======
+    const query = 'INSERT INTO observation (title, content, process_id) VALUES ($1, $2, $3) RETURNING *';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const values = [observation.title, observation.content, observation.process_id];
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
 
   async findById(observation_id) {
+<<<<<<< HEAD
     const query = `SELECT * FROM observation WHERE observation_id = $1`;
+=======
+    const query = 'SELECT * FROM observation WHERE observation_id = $1';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [observation_id]);
     return rows[0];
   }
@@ -43,12 +51,20 @@ async findWithProcess(observation_id) {
 
 
   async delete(observation_id) {
+<<<<<<< HEAD
     const query = `DELETE FROM observation WHERE observation_id=$1`;
+=======
+    const query = 'DELETE FROM observation WHERE observation_id=$1';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     await pool.query(query, [observation_id]);
   }
 
   async findByProcessId(process_id) {
+<<<<<<< HEAD
     const query = `SELECT * FROM observation WHERE process_id = $1`;
+=======
+    const query = 'SELECT * FROM observation WHERE process_id = $1';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [process_id]);
     return rows;
   }

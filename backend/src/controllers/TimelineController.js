@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { TimelineService } from "../services/TimelineService.js";
 import { ProcessService } from "../services/ProcessService.js";
+=======
+import { TimelineService } from '../services/TimelineService.js';
+import { ProcessService } from '../services/ProcessService.js';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 const timelineService = new TimelineService();
 const processService = new ProcessService();
@@ -47,7 +52,11 @@ export class TimelineController {
       const { event_id } = req.params;
       const account_id = req.user.id;
       await timelineService.removeEvent(parseInt(event_id), account_id);
+<<<<<<< HEAD
       res.status(200).json({ message: "Eliminación de evento con éxito" });
+=======
+      res.status(200).json({ message: 'Eliminación de evento con éxito' });
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     }  catch (error) {
     if (error.message === 'Evento no encontrado' || error.message === 'Timeline no encontrado') {
       return res.status(404).json({ message: error.message });
@@ -66,7 +75,11 @@ export class TimelineController {
     const account_id = req.user.id;
 
     await timelineService.deleteTimeline(timeline_id, account_id);
+<<<<<<< HEAD
     return res.status(204).json({ message: "Timeline eliminado correctamente" });
+=======
+    return res.status(204).json({ message: 'Timeline eliminado correctamente' });
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
   } catch (error) {
     if (error.message === 'Timeline no encontrado') {
       return res.status(404).json({ message: error.message });
@@ -104,6 +117,7 @@ export class TimelineController {
 
       const timeline = await timelineService.getTimelineByProcessId(process_id);
       if (!timeline) {
+<<<<<<< HEAD
       return res.status(404).json({ message: "Timeline no encontrado" });
     }
       res.status(200).json(timeline);
@@ -112,6 +126,16 @@ export class TimelineController {
       return res.status(403).json({ message: error.message });
     }
     if (error.message === "Process not found") {
+=======
+      return res.status(404).json({ message: 'Timeline no encontrado' });
+    }
+      res.status(200).json(timeline);
+    } catch (error) {
+    if (error.message === 'Unauthorized access to this process') {
+      return res.status(403).json({ message: error.message });
+    }
+    if (error.message === 'Process not found') {
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
       return res.status(404).json({ message: error.message });
     }
     res.status(400).json({ message: error.message });

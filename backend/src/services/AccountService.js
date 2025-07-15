@@ -23,13 +23,21 @@ export class AccountService {
     try {
       const user = await accountRepo.findByUsername(username);
       if (!user) {
+<<<<<<< HEAD
         console.log('❌ Usuario no encontrado:', username);
+=======
+  
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
         throw new Error('User not found');
       }
 
       const valid = await bcrypt.compare(password, user.password);
       if (!valid) {
+<<<<<<< HEAD
         console.log('❌ Contraseña incorrecta para:', username);
+=======
+      
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
         throw new Error('Invalid password');
       }
 
@@ -41,7 +49,11 @@ export class AccountService {
         { expiresIn: '1h' }
       );
 
+<<<<<<< HEAD
       console.log('✅ Login exitoso:', username);
+=======
+
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
       return { user, token };
     } catch (err) {
       console.error('⚠️ Error en login:', err.message);

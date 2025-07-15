@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import express from "express";
 import { ProcessController } from "../controllers/ProcessController.js";
+=======
+import express from 'express';
+import { ProcessController } from '../controllers/ProcessController.js';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 import { authenticateToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -64,7 +69,11 @@ const processController = new ProcessController();
  *         description: Datos inválidos
  */
 
+<<<<<<< HEAD
 router.post("/", processController.createProcess.bind(processController));
+=======
+router.post('/', processController.createProcess.bind(processController));
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 /**
  * @swagger
@@ -105,7 +114,11 @@ router.get('/me',  processController.getProcessesByAccountId.bind(processControl
  *       404:
  *         description: Proceso no encontrado
  */
+<<<<<<< HEAD
 router.get( "/:process_id", processController.getProcessById.bind(processController)
+=======
+router.get( '/:process_id', processController.getProcessById.bind(processController)
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 );
 
 /**
@@ -133,7 +146,11 @@ router.get( "/:process_id", processController.getProcessById.bind(processControl
  *       400:
  *         description: Error de validación o de sintaxis
  */
+<<<<<<< HEAD
 router.delete("/:process_id",  processController.deleteProcess.bind(processController)
+=======
+router.delete('/:process_id',  processController.deleteProcess.bind(processController)
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 );
 
 
@@ -175,7 +192,11 @@ router.delete("/:process_id",  processController.deleteProcess.bind(processContr
  *       200:
  *         description: Lista de procesos
  */
+<<<<<<< HEAD
 router.get("/", processController.getAllProcesses.bind(processController));
+=======
+router.get('/', processController.getAllProcesses.bind(processController));
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 /**
  * @swagger
@@ -234,7 +255,11 @@ router.get("/", processController.getAllProcesses.bind(processController));
  *       400:
  *         description: Error de validación o sintaxis
  */
+<<<<<<< HEAD
 router.put("/:process_id", processController.updateProcess.bind(processController));
+=======
+router.put('/:process_id', processController.updateProcess.bind(processController));
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 
 

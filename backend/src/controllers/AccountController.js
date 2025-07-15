@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { AccountService } from "../services/AccountService.js";
+=======
+import { AccountService } from '../services/AccountService.js';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 const accountService = new AccountService();
 
@@ -12,7 +16,23 @@ export class AccountController {
       if (!['admin', 'abogada', 'lector'].includes(account.role)) {
         return res.status(400).json({ message: 'Invalid role' });
       }
+<<<<<<< HEAD
 
+=======
+    
+      // Validar que el nombre de usuario tenga al menos 8 caracteres y solo letras
+if (account.username) {
+  const usernameRegex = /^[A-Za-z]{8,}$/;
+
+  if (!usernameRegex.test(account.username)) {
+    return res.status(400).json({
+      message: 'El nombre de usuario debe tener al menos 8 letras y solo puede contener letras sin espacios ni números'
+    });
+  }
+}
+
+      
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
       // Validate phone number format if provided
       if (account.phone_number && !/^\+?[1-9]\d{1,14}$/.test(account.phone_number)) {
         return res.status(400).json({ message: 'Invalid phone number format' });
@@ -47,7 +67,11 @@ export class AccountController {
     try {
       const { email } = req.body;
       await accountService.recoverPassword(email);
+<<<<<<< HEAD
       res.status(200).json({ message: "Recovery email sent" });
+=======
+      res.status(200).json({ message: 'Recovery email sent' });
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     } catch (error) {
       res.status(404).json({ message: error.message });
     }
@@ -73,6 +97,14 @@ export class AccountController {
         }
       }
 
+<<<<<<< HEAD
+=======
+      // Validar que la contraseña tenga al menos 8 caracteres
+      if (profileData.password && profileData.password.length < 8) {    
+        return res.status(400).json({ message: 'la contrseaña debe tener 8 carcateres minimo' });
+      }
+
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
 
       // Validate phone number format if provided

@@ -2,20 +2,32 @@ import pool from '../config/db.js';
 
 export class EventRepository {
   async create(event) {
+<<<<<<< HEAD
     const query = `INSERT INTO event (name, description, date, "order", timeline_id) VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+=======
+    const query = 'INSERT INTO event (name, description, date, "order", timeline_id) VALUES ($1,$2,$3,$4,$5) RETURNING *';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const values = [event.name, event.description, event.date, event.order, event.timeline_id];
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
 
   async findById(event_id) {
+<<<<<<< HEAD
     const query = `SELECT * FROM event WHERE event_id = $1`;
+=======
+    const query = 'SELECT * FROM event WHERE event_id = $1';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [event_id]);
     return rows[0];
   }
 
   async update(event) {
+<<<<<<< HEAD
     const query = `UPDATE event SET name=$1, description=$2, date=$3, "order"=$4 WHERE event_id=$5 RETURNING *`;
+=======
+    const query = 'UPDATE event SET name=$1, description=$2, date=$3, "order"=$4 WHERE event_id=$5 RETURNING *';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const values = [event.name, event.description, event.date, event.order, event.event_id];
     const { rows } = await pool.query(query, values);
     return rows[0];
@@ -38,7 +50,11 @@ export class EventRepository {
 
 
   async delete(event_id) {
+<<<<<<< HEAD
     const query = `DELETE FROM event WHERE event_id=$1`;
+=======
+    const query = 'DELETE FROM event WHERE event_id=$1';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     await pool.query(query, [event_id]);
   }
 
@@ -51,14 +67,22 @@ export class EventRepository {
   const { rows } = await pool.query(query, [timeline_id]);
 
   for (let i = 0; i < rows.length; i++) {
+<<<<<<< HEAD
     const updateQuery = `UPDATE event SET "order" = $1 WHERE event_id = $2`;
+=======
+    const updateQuery = 'UPDATE event SET "order" = $1 WHERE event_id = $2';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     await pool.query(updateQuery, [i + 1, rows[i].event_id]);
   }
 }
 
 
   async findByTimelineId(timeline_id) {
+<<<<<<< HEAD
     const query = `SELECT * FROM event WHERE timeline_id = $1 ORDER BY "order"`;
+=======
+    const query = 'SELECT * FROM event WHERE timeline_id = $1 ORDER BY "order"';
+>>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [timeline_id]);
     return rows;
   }
