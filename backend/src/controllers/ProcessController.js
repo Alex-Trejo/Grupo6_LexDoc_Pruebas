@@ -9,10 +9,33 @@ export class ProcessController {
       processData.account_id = req.user.id;
 
       // Validar todos los campos requeridos
-      if (!processData.title || !processData.type || !processData.offense || !processData.denounced || !processData.denouncer || !processData.province || !processData.carton) {
-        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+      if (
+        !processData.title ||
+        !processData.type ||
+        !processData.offense ||
+        !processData.denounced ||
+        !processData.denouncer ||
+        !processData.province ||
+        !processData.carton
+      ) {
+        return res
+          .status(400)
+          .json({ message: 'Todos los campos son obligatorios' });
       }
-      
+
+      // Expresión regular: solo letras (mayúsculas y minúsculas), espacios opcionales
+      const onlyLettersRegex = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/;
+
+      if (
+        !onlyLettersRegex.test(processData.denounced) ||
+        !onlyLettersRegex.test(processData.denouncer) ||
+        !onlyLettersRegex.test(processData.province)
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:'Los campos denounced, denouncer y province solo deben contener letras y espacios',});
+      }
 
       const newProcess = await processService.createProcess(processData);
       res.status(201).json(newProcess);

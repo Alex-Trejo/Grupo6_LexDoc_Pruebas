@@ -12,7 +12,19 @@ export class AccountController {
       if (!['admin', 'abogada', 'lector'].includes(account.role)) {
         return res.status(400).json({ message: 'Invalid role' });
       }
+    
+      // Validar que el nombre de usuario tenga al menos 8 caracteres y solo letras
+if (account.username) {
+  const usernameRegex = /^[A-Za-z]{8,}$/;
 
+  if (!usernameRegex.test(account.username)) {
+    return res.status(400).json({
+      message: 'El nombre de usuario debe tener al menos 8 letras y solo puede contener letras sin espacios ni números'
+    });
+  }
+}
+
+      
       // Validate phone number format if provided
       if (account.phone_number && !/^\+?[1-9]\d{1,14}$/.test(account.phone_number)) {
         return res.status(400).json({ message: 'Invalid phone number format' });
@@ -71,6 +83,11 @@ export class AccountController {
         if (!allowedDomains.includes(domain)) {
           return res.status(400).json({ message: `Email domain '${domain}' is not allowed` });
         }
+      }
+
+      // Validar que la contraseña tenga al menos 8 caracteres
+      if (profileData.password && profileData.password.length < 8) {    
+        return res.status(400).json({ message: 'la contrseaña debe tener 8 carcateres minimo' });
       }
 
 
