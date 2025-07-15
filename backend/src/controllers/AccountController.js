@@ -45,15 +45,23 @@ if (account.username) {
     }
   }
 
-  async login(req, res) {
-    try {
-      const { username, password } = req.body;
-      const result = await accountService.login(username, password);
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(401).json({ message: error.message });
+ async login(req, res) {
+  try {
+    const { username, password } = req.body;
+
+    // Validar que el username solo tenga letras
+    const onlyLettersRegex = /^[A-Za-z]+$/;
+    if (!onlyLettersRegex.test(username)) {
+      return res.status(400).json({ message: 'Username must contain only letters (no numbers or special characters).' });
     }
+
+    const result = await accountService.login(username, password);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(401).json({ message: error.message });
   }
+}
+
 
   async recoverPassword(req, res) {
     try {
