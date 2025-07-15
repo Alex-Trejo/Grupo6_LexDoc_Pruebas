@@ -9,12 +9,6 @@ export class ProcessController {
       processData.account_id = req.user.id;
 
       // Validar todos los campos requeridos
-<<<<<<< HEAD
-      if (!processData.title || !processData.type || !processData.offense || !processData.denounced || !processData.denouncer || !processData.province || !processData.carton) {
-        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
-      }
-      
-=======
       if (
         !processData.title ||
         !processData.type ||
@@ -42,7 +36,6 @@ export class ProcessController {
           .json({
             message:'Los campos denounced, denouncer y province solo deben contener letras y espacios',});
       }
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
 
       const newProcess = await processService.createProcess(processData);
       res.status(201).json(newProcess);
@@ -67,16 +60,6 @@ export class ProcessController {
     const updatedProcess = await processService.updateProcess(updateData);
 
     res.status(200).json({
-<<<<<<< HEAD
-      message: "Proceso actualizado correctamente",
-      process: updatedProcess,
-    });
-  } catch (error) {
-    if (error.message === "Unauthorized access to this process") {
-      return res.status(403).json({ message: error.message });
-    }
-    if (error.message === "Process not found") {
-=======
       message: 'Proceso actualizado correctamente',
       process: updatedProcess,
     });
@@ -85,7 +68,6 @@ export class ProcessController {
       return res.status(403).json({ message: error.message });
     }
     if (error.message === 'Process not found') {
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
       return res.status(404).json({ message: error.message });
     }
     res.status(400).json({ message: error.message });
@@ -102,19 +84,11 @@ async deleteProcess(req, res) {
 
     // Verificar si existe el proceso y si pertenece al usuario autenticado
     if (!process || Number(process.account_id) !== Number(account_id)) {
-<<<<<<< HEAD
-      return res.status(403).json({ message: "No autorizado para eliminar este proceso." });
-    }
-
-    await processService.deleteProcess(process_id);
-    res.status(204).json({ message: "Proceso eliminado correctamente." });
-=======
       return res.status(403).json({ message: 'No autorizado para eliminar este proceso.' });
     }
 
     await processService.deleteProcess(process_id);
     res.status(204).json({ message: 'Proceso eliminado correctamente.' });
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

@@ -2,33 +2,21 @@ import pool from '../config/db.js';
 
 export class AccountRepository {
   async create(account) {
-<<<<<<< HEAD
-    const query = `INSERT INTO account (username, password, email, phone_number, role) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-=======
     const query = 'INSERT INTO account (username, password, email, phone_number, role) VALUES ($1, $2, $3, $4, $5) RETURNING *';
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const values = [account.username, account.password, account.email, account.phone_number, account.role];
     const { rows } = await pool.query(query, values);
     return rows[0];
   }
 
   async findByUsername(username) {
-<<<<<<< HEAD
-    const query = `SELECT * FROM account WHERE username = $1`;
-=======
     const query = 'SELECT * FROM account WHERE username = $1';
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [username]);
     return rows[0];
   }
 
 
   async findById(account_id) {
-<<<<<<< HEAD
-    const query = `SELECT * FROM account WHERE account_id = $1`;
-=======
     const query = 'SELECT * FROM account WHERE account_id = $1';
->>>>>>> 16d1e9ffeab75df9f1d0ef6bb6eaaf6b8bad7857
     const { rows } = await pool.query(query, [account_id]);
     return rows[0];
   }
