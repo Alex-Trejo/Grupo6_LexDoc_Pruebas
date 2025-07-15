@@ -18,6 +18,20 @@ export default function RegisterForms({ onRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      alert('The password must have at least 8 characters, at least one capital letter and one number.');
+      return;
+    }
+
+    
+    const usernameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    if (!usernameRegex.test(formData.username)) {
+      alert('The username must contain only letters and no special characters or numbers.');
+      return;
+    }
+
     onRegister(formData);
   };
 
@@ -70,7 +84,6 @@ export default function RegisterForms({ onRegister }) {
         Registrarse
       </button>
 
-      {/* Enlace para volver al login */}
       <div className="text-center mt-2">
         <a href="/" className="text-sm text-blue-400 hover:underline">
           ¿Ya tienes una cuenta? Inicia sesión
