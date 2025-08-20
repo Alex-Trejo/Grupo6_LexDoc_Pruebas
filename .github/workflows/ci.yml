@@ -31,6 +31,16 @@ jobs:
         run: npm run lint
 
       - name: Ejecutar pruebas
-        run: npm test
+        run: npm test -- --coverage
+       
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm test -- --coverage
+
+      - name: Guardar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-tests
+          path: backend/coverage
 
      
