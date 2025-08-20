@@ -14,9 +14,7 @@ export default defineConfig({
     js,
   },
   rules: {
-    semi: ['error', 'always'],
-    quotes: ['error', 'single'],
-    'no-console': ['error', { allow: ['warn', 'error'] }],
+   
     'max-len': ['warn', { code: 300 }],
   },
   extends: [js.configs.recommended],
