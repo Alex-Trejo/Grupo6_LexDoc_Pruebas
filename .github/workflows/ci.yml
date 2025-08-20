@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend   # <- Todos los comandos correrán en backend
+        working-directory: backend   
     steps:
-      - name: Imprimir mensaje
-        run: echo "Hola, este es un workflow simple que corre al hacer push"
-
       - name: Clonar repositorio
         uses: actions/checkout@v4
+
+      - name: Imprimir mensaje
+        run: echo "Hola, este es un workflow simple que corre al hacer push"
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -33,5 +33,4 @@ jobs:
       - name: Ejecutar pruebas
         run: npm test
 
-      - name: Simular despliegue
-        run: echo "Despliegue simulado. La aplicación pasó pruebas y Lint correctamente."
+     
