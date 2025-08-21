@@ -26,7 +26,7 @@ export default function DashboardAbogada() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/processes/', {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/processes/`, {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },
@@ -50,7 +50,7 @@ export default function DashboardAbogada() {
 
   const createProcess = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/processes', {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/processes`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${auth.token}`,
@@ -72,7 +72,7 @@ export default function DashboardAbogada() {
         carton: '',
       });
 
-      const updated = await fetch('http://localhost:3000/api/processes/', {
+  const updated = await fetch(`${import.meta.env.VITE_API_URL}/api/processes/`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       const data = await updated.json();
@@ -85,7 +85,7 @@ export default function DashboardAbogada() {
   const updateProcess = async (processId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/processes/${processId}`,
+  `${import.meta.env.VITE_API_URL}/api/processes/${processId}`,
         {
           method: 'PUT',
           headers: {
@@ -103,7 +103,7 @@ export default function DashboardAbogada() {
       setEditProcessId(null);
       setEditProcessTitle('');
 
-      const res = await fetch('http://localhost:3000/api/processes/', {
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/api/processes/`, {
         headers: { Authorization: `Bearer ${auth.token}` },
       });
       const data = await res.json();
@@ -116,7 +116,7 @@ export default function DashboardAbogada() {
   const deleteProcess = async (processId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/processes/${processId}`,
+  `${import.meta.env.VITE_API_URL}/api/processes/${processId}`,
         {
           method: 'DELETE',
           headers: {
@@ -137,7 +137,7 @@ export default function DashboardAbogada() {
   const fetchObservations = async (processId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/observations/process/${processId}`,
+  `${import.meta.env.VITE_API_URL}/api/observations/process/${processId}`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -159,7 +159,7 @@ export default function DashboardAbogada() {
 
   const createObservation = async (processId) => {
     try {
-      const response = await fetch('http://localhost:3000/api/observations', {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/observations`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${auth.token}`,
@@ -185,7 +185,7 @@ export default function DashboardAbogada() {
   const deleteObservation = async (observationId, processId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/observations/${observationId}`,
+  `${import.meta.env.VITE_API_URL}/api/observations/${observationId}`,
         {
           method: 'DELETE',
           headers: {
@@ -206,7 +206,7 @@ export default function DashboardAbogada() {
 
   const updateObservation = async (observationId, processId) => {
     try {
-      const response = await fetch('http://localhost:3000/api/observations', {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/observations`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${auth.token}`,

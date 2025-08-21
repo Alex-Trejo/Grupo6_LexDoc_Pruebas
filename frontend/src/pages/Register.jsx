@@ -5,7 +5,7 @@ export default function Register() {
   const handleRegister = async (formData) => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/accounts/create',
+  `${import.meta.env.VITE_API_URL}/api/accounts/create`,
         formData
       );
 

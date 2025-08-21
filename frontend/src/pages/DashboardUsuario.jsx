@@ -25,7 +25,7 @@ function DashboardUsuario() {
     if (!auth?.token) return;
 
     // Obtener procesos
-    fetch('http://localhost:3000/api/processes', {
+  fetch(`${import.meta.env.VITE_API_URL}/api/processes`, {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
@@ -36,7 +36,7 @@ function DashboardUsuario() {
 
         data.forEach((proceso) => {
           fetch(
-            `http://localhost:3000/api/evidences/process/${proceso.process_id}`,
+            `${import.meta.env.VITE_API_URL}/api/evidences/process/${proceso.process_id}`,
             {
               headers: {
                 Authorization: `Bearer ${auth.token}`,
@@ -56,7 +56,7 @@ function DashboardUsuario() {
       .catch((err) => console.error('Error al obtener procesos', err));
 
     // Obtener perfil del usuario
-    fetch('http://localhost:3000/api/accounts/profile', {
+  fetch(`${import.meta.env.VITE_API_URL}/api/accounts/profile`, {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
@@ -95,7 +95,7 @@ function DashboardUsuario() {
       payload.password = formPerfil.password;
     }
 
-    fetch('http://localhost:3000/api/accounts/profile', {
+  fetch(`${import.meta.env.VITE_API_URL}/api/accounts/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
