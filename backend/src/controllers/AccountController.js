@@ -34,7 +34,7 @@ if (account.username) {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
       if (account.email && !emailRegex.test(account.email)) {
-        return res.status(400).json({ message: 'Invalid email format -> Formato de email invalido ' });
+        return res.status(400).json({ message: 'Invalid email format -> Formato de email invalido' });
       }
 
       // Create the account

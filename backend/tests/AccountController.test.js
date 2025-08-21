@@ -84,7 +84,7 @@ describe('AccountController', () => {
         mockRequest = { body: { username: 'validusername', password: '123', email: 'invalid-email', role: 'lector' } };
         await accountController.register(mockRequest, mockResponse);
         expect(mockResponse.status).toHaveBeenCalledWith(400);
-        expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Invalid email format' });
+        expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Invalid email format -> Formato de email invalido' });
         expect(AccountService.prototype.register).not.toHaveBeenCalled();
     });
     
