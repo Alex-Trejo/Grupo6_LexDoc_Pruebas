@@ -17,25 +17,13 @@ const app = express();
 
 // Middleware
 // Middleware CORS seguro
-const allowedOrigins = [
-  'http://localhost:3000', 
-  'http://localhost:5173',
-  'http://localhost:5174'
-];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Not allowed by CORS: ${origin}`));
-    }
-  },
-  optionsSuccessStatus: 200,
-  credentials: true // si usas cookies/sesiones, de lo contrario puedes omitir
-};
-
-app.use(cors(corsOptions));
+// Permitir todos los orígenes
+app.use(cors({
+  origin: true,
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 
 // Eliminar encabezado 'X-Powered-By' para no divulgar versión de Express
 app.disable('x-powered-by');
