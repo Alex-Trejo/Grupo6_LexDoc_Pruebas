@@ -184,3 +184,29 @@ jobs:
         with:
           name: k6-performance-reports
           path: backend/reports/
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Run tests with coverage (Vitest)
+        run: npx vitest run --coverage
+
+      - name: Upload coverage report frontend
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-frontend
+          path: frontend/coverage
