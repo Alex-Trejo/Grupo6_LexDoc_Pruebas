@@ -7,6 +7,7 @@ on:
     branches: [main]
 
 jobs:
+   # --- JOB 1: BUILD Y PRUEBAS UNITARIAS ---
   build-and-test:
     runs-on: ubuntu-latest
     
@@ -42,7 +43,7 @@ jobs:
         run: npm install
 
       # ===================================================================
-      # --- PASO AÑADIDO: CONFIGURAR EL ESQUEMA DE LA BASE DE DATOS ---
+      # --- PASO: CONFIGURAR EL ESQUEMA DE LA BASE DE DATOS ---
       # ===================================================================
       - name: Configurar base de datos
         # Este comando se conecta al servicio de PostgreSQL y ejecuta tu script SQL
@@ -55,7 +56,7 @@ jobs:
       - name: Lint del código
         run: npm run lint
 
-      - name: Ejecutar pruebas con cobertura
+      - name: Ejecutar pruebas y validar cobertura
         run:  npm run test:ci
         env:
           DB_USER: ${{ secrets.DB_USER }}
@@ -71,3 +72,85 @@ jobs:
         with:
           name: cobertura-tests
           path: backend/coverage
+  
+  # ===================================================================
+  # --- JOB 2: PRUEBAS DE RENDIMIENTO CON K6 (NUEVO) ---
+  # ===================================================================
+  performance-tests:
+    runs-on: ubuntu-latest
+    # Este job depende del éxito del job anterior
+    needs: build-and-test
+    # Condición: Ejecutar solo en push a 'main' para no gastar minutos en cada PR.
+    # Si quieres probarlo en un PR, puedes eliminar esta línea temporalmente.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependencias del backend
+        working-directory: backend
+        run: npm install
+      - name: Configurar base de datos
+        working-directory: backend
+        run: psql -h localhost -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }} -p 5432 -f database-schema.sql
+        env:
+          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+      
+      - name: Iniciar backend en segundo plano
+        working-directory: backend
+        # Inicia el servidor y el '&' lo deja corriendo para los siguientes pasos
+        run: npm start &
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_HOST: localhost
+          DB_PORT: 5432
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      
+      - name: Esperar a que el backend esté listo
+        # Pausa crucial para dar tiempo al servidor de iniciarse antes de atacarlo.
+        run: sleep 15
+
+      - name: Instalar k6
+        uses: grafana/k6-action@v0.3.1
+      
+      - name: Crear carpeta de reportes
+        working-directory: backend
+        run: mkdir -p reports
+
+      - name: Ejecutar Prueba de Carga (Ramp Load) - Versión CI
+        run: k6 run backend/k6/ramp_load.js --duration 2m
+
+      - name: Ejecutar Prueba de Picos (Spike) - Versión CI
+        run: k6 run backend/k6/spike.js --duration 1m
+
+      - name: Ejecutar Prueba de Resistencia (Soak) - Versión CI
+        # Ejecutamos una versión corta para validar que el script funciona
+        # y no tener el pipeline corriendo por una hora.
+        run: k6 run backend/k6/soak.js --duration 3m
+
+      - name: Guardar reportes de k6
+        # Este paso se ejecuta siempre, incluso si las pruebas de k6 fallan,
+        # para que puedas ver los reportes y diagnosticar el problema.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-performance-reports
+          path: backend/reports/
