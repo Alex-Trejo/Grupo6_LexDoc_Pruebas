@@ -127,14 +127,15 @@ jobs:
       - name: Esperar a que el backend esté listo
         # Pausa crucial para dar tiempo al servidor de iniciarse antes de atacarlo.
         run: sleep 15
+
+
       - name: Instalar k6
         run: |
-          sudo apt-get install -y dirmngr --install-recommends
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C520A9C0610B7420
-          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install -y k6
-        
+            sudo apt-get install -y debian-keyring
+            curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/k6.gpg
+            echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+            sudo apt-get update
+            sudo apt-get install k6
       
       - name: Crear carpeta de reportes
         working-directory: backend
