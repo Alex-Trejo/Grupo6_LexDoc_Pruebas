@@ -9,5 +9,10 @@ export async function loginUser(credentials) {
     throw new Error('Error en el inicio de sesión');
   }
 
+  if (!response.ok) {
+    throw new Error('Error en el inicio de sesión');
+  }
+
+
   return await response.json();
 }
