@@ -43,7 +43,7 @@ export class AccountService {
 
       return { user, token };
     } catch (err) {
-      console.error('⚠️ Error en login:', err.message);
+      //console.error('⚠️ Error en login:', err.message);
       throw err;
     }
   }

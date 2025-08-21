@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const SECRET_KEY = process.env.JWT_SECRET || 'AAAAAAAAABBBBBCCCC';
+const SECRET_KEY = process.env.JWT_SECRET;
 
 // Generar token
 export function generateToken(payload) {

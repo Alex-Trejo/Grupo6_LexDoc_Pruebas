@@ -121,6 +121,20 @@ describe('ProcessService', () => {
       });
   });
 
+   it('debería llamar a processRepo.findAll con un objeto vacío si no se proporcionan filtros', async () => {
+        // Llamamos a la función sin argumentos, por lo que 'filters' será {} por defecto.
+        await processService.getAllProcesses(); 
+        
+        // Verificamos que se desestructura correctamente y se pasa un objeto con propiedades undefined
+        expect(ProcessRepository.prototype.findAll).toHaveBeenCalledWith({
+            status: undefined,
+            startDate: undefined,
+            endDate: undefined,
+            name: undefined
+        });
+      });
+  
+
   // --- Pruebas para existsById ---
   describe('existsById', () => {
     it('debería devolver true si el proceso existe', async () => {

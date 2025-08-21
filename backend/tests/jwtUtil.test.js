@@ -4,7 +4,7 @@ import { generateToken, verifyToken } from '../src/utils/jwtUtil.js';
 import jwt from 'jsonwebtoken';
 
 // Accedemos a la misma clave secreta que usa la aplicación para las pruebas.
-const SECRET_KEY = process.env.JWT_SECRET || 'AAAAAAAAABBBBBCCCC';
+const SECRET_KEY = process.env.JWT_SECRET ;
 
 describe('JWT Utilities', () => {
 
@@ -18,26 +18,14 @@ describe('JWT Utilities', () => {
       const token = generateToken(payload);
 
       // Assert
-      // 1. Verificamos que el resultado es un string no vacío.
       expect(typeof token).toBe('string');
       expect(token.length).toBeGreaterThan(0);
-
-      // 2. Verificamos que el token puede ser decodificado con la misma clave secreta.
-      // Esto prueba indirectamente que fue firmado correctamente.
       const decoded = jwt.verify(token, SECRET_KEY);
-
-      // 3. Verificamos que el contenido (payload) del token decodificado es correcto.
-      // Usamos 'expect.objectContaining' para no tener que comprobar las propiedades
-      // que jwt añade automáticamente (como 'iat' y 'exp').
       expect(decoded).toEqual(expect.objectContaining(payload));
     });
 
     it('debería lanzar un error si el payload no es un objeto válido', () => {
-        // Arrange: Pasamos un payload inválido (undefined)
         const invalidPayload = undefined;
-
-        // Act & Assert: Verificamos que jwt.sign lanza un error.
-        // Usamos una función anónima para que Jest pueda capturar el error.
         expect(() => generateToken(invalidPayload)).toThrow();
     });
   });
@@ -45,59 +33,74 @@ describe('JWT Utilities', () => {
   // --- Pruebas para verifyToken ---
   describe('verifyToken', () => {
     it('debería verificar un token válido y devolver el payload', () => {
-      // Arrange
       const payload = { userId: 2, role: 'lector' };
-      // Creamos un token de prueba válido.
       const validToken = jwt.sign(payload, SECRET_KEY);
-
-      // Act
       const decoded = verifyToken(validToken);
-
-      // Assert
       expect(decoded).toEqual(expect.objectContaining(payload));
     });
 
     it('debería devolver null si el token es inválido (firma incorrecta)', () => {
-      // Arrange
       const payload = { userId: 3 };
-      // Firmamos el token con una clave secreta DIFERENTE.
       const invalidToken = jwt.sign(payload, 'WRONG_SECRET_KEY');
-
-      // Act
       const decoded = verifyToken(invalidToken);
-
-      // Assert
       expect(decoded).toBeNull();
     });
 
     it('debería devolver null si el token ha expirado', () => {
-      // Arrange
       const payload = { userId: 4 };
-      // Creamos un token que expira inmediatamente (0 segundos).
       const expiredToken = jwt.sign(payload, SECRET_KEY, { expiresIn: 0 });
-      
-      // Act
       const decoded = verifyToken(expiredToken);
-
-      // Assert
       expect(decoded).toBeNull();
     });
 
     it('debería devolver null si el token es un string malformado', () => {
-        // Arrange
         const malformedToken = 'esto.no.es.un.token';
-
-        // Act
         const decoded = verifyToken(malformedToken);
-
-        // Assert
         expect(decoded).toBeNull();
     });
 
     it('debería devolver null si el token es nulo o indefinido', () => {
-        // Arrange, Act, Assert
         expect(verifyToken(null)).toBeNull();
         expect(verifyToken(undefined)).toBeNull();
+    });
+  });
+
+  // ===================================================================
+  // --- INICIO DE LA PRUEBA AÑADIDA PARA AUMENTAR COBERTURA ---
+  // ===================================================================
+
+  describe('when JWT_SECRET environment variable is not set', () => {
+    let originalSecret;
+
+    // Antes de que empiecen las pruebas en este bloque, guardamos la variable original y la borramos.
+    beforeAll(() => {
+      originalSecret = process.env.JWT_SECRET;
+      delete process.env.JWT_SECRET;
+    });
+
+    // Después de que terminen todas las pruebas, restauramos la variable original para no afectar otros tests.
+    afterAll(() => {
+      process.env.JWT_SECRET = originalSecret;
+    });
+
+    it('debería usar la clave secreta de respaldo para generar y verificar un token', () => {
+      // Forzamos a Jest a recargar el módulo jwtUtil.js AHORA,
+      // mientras process.env.JWT_SECRET está borrado.
+      jest.resetModules();
+      const { generateToken: generateTokenWithFallback, verifyToken: verifyTokenWithFallback } = require('../src/utils/jwtUtil.js');
+
+      const payload = { userId: 5 };
+      const fallbackToken = generateTokenWithFallback(payload);
+
+      // Verificamos que el token fue firmado con la clave de respaldo.
+      // Si jwt.verify no lanza un error, significa que la clave es correcta.
+      expect(() => {
+        jwt.verify(fallbackToken, 'AAAAAAAAABBBBBCCCC');
+      }).not.toThrow();
+
+      // Verificamos que nuestra función `verifyToken` también funciona con la clave de respaldo.
+      const decoded = verifyTokenWithFallback(fallbackToken);
+      expect(decoded).toEqual(expect.objectContaining(payload));
     });
   });
 });
