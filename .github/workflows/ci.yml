@@ -29,8 +29,8 @@ jobs:
    # --- JOB 1: BUILD Y PRUEBAS UNITARIAS ---
   build-and-test:
     runs-on: ubuntu-latest
-    needs: changes # Depende del detective
-    if: needs.changes.outputs.backend == 'true' # Solo se ejecuta si hay cambios en el backend
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     
     services:
       postgres:
@@ -187,6 +187,8 @@ jobs:
 
   frontend-tests:
     runs-on: ubuntu-latest
+    needs: changes 
+    if: needs.changes.outputs.frontend == 'true'
     defaults:
       run:
         working-directory: frontend
