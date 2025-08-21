@@ -56,7 +56,7 @@ jobs:
         run: npm run lint
 
       - name: Ejecutar pruebas con cobertura
-        run: npm run test:coverage
+        run: npm test
         env:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
