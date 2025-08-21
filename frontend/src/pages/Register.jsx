@@ -9,7 +9,7 @@ export default function Register() {
         formData
       );
 
-      alert('Usuario registrado correctamente');
+      alert('Usuario registrado correctamente Exito');
       console.log(response.data);
     } catch (error) {
       console.error('Error en el registro:', error.response?.data || error);
