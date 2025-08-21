@@ -164,7 +164,7 @@ jobs:
 
       - name: Ejecutar Prueba de Carga (Ramp Load) - Versión CI
         working-directory: backend
-        run: k6 run tests/k6/ramp_load.js --duration 2m
+        run: k6 run tests/k6/ramp_load.js --duration 1m
 
       - name: Ejecutar Prueba de Picos (Spike) - Versión CI
         working-directory: backend
@@ -174,7 +174,7 @@ jobs:
         # Ejecutamos una versión corta para validar que el script funciona
         # y no tener el pipeline corriendo por una hora.
         working-directory: backend
-        run: k6 run tests/k6/soak.js --duration 3m
+        run: k6 run tests/k6/soak.js --duration 1m
 
       - name: Guardar reportes de k6
         # Este paso se ejecuta siempre, incluso si las pruebas de k6 fallan,

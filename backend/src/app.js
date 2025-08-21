@@ -6,9 +6,9 @@ import dotenv from 'dotenv';
 import pool from './config/db.js';
 import routes from './routes/index.js';
 import { swaggerUi, swaggerSpec } from './swagger.js';
-import accountRoutes from './routes/accountRoutes.js';
-import processRoutes from './routes/processRoutes.js';
-import timelineRoutes from './routes/timelineRoutes.js';
+// import accountRoutes from './routes/accountRoutes.js';
+// import processRoutes from './routes/processRoutes.js';
+// import timelineRoutes from './routes/timelineRoutes.js';
 
 
 dotenv.config();
@@ -56,9 +56,9 @@ app.use(async (req, res, next) => {
 
 // Rutas
 app.use('/api', routes);
-app.use('/accounts', accountRoutes);
-app.use('/processes', processRoutes);
-app.use('/timelines', timelineRoutes);
+// app.use('/accounts', accountRoutes);
+// app.use('/processes', processRoutes);
+// app.use('/timelines', timelineRoutes);
 
 
 // Documentación Swagger

@@ -11,7 +11,8 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api',
+        url: `${process.env.BASE_URL || 'http://localhost:3000'}/api`,
+        description: 'Servidor Principal de la API'
       },
     ],
     components: {
@@ -25,7 +26,7 @@ const swaggerOptions = {
     },
     // NO agregues "security" aquí para no hacerlo global
   },
-  apis: ['./src/routes/*.js'],
+  apis: ['./src/routes/*.js', './src/routes/index.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
