@@ -127,24 +127,26 @@ jobs:
       - name: Esperar a que el backend esté listo
         # Pausa crucial para dar tiempo al servidor de iniciarse antes de atacarlo.
         run: sleep 15
-
       - name: Instalar k6
-        uses: grafana/k6-action@v0.3.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y k6
+        
       
       - name: Crear carpeta de reportes
         working-directory: backend
         run: mkdir -p reports
 
       - name: Ejecutar Prueba de Carga (Ramp Load) - Versión CI
-        run: k6 run backend/k6/ramp_load.js --duration 2m
+        run: k6 run backend/test/k6/ramp_load.js --duration 2m
 
       - name: Ejecutar Prueba de Picos (Spike) - Versión CI
-        run: k6 run backend/k6/spike.js --duration 1m
+        run: k6 run backend/test/k6/spike.js --duration 1m
 
       - name: Ejecutar Prueba de Resistencia (Soak) - Versión CI
         # Ejecutamos una versión corta para validar que el script funciona
         # y no tener el pipeline corriendo por una hora.
-        run: k6 run backend/k6/soak.js --duration 3m
+        run: k6 run backend/test/k6/soak.js --duration 3m
 
       - name: Guardar reportes de k6
         # Este paso se ejecuta siempre, incluso si las pruebas de k6 fallan,
