@@ -56,5 +56,5 @@ CREATE TABLE Observation (
     title VARCHAR(150),
     content TEXT,
     process_id INTEGER NOT NULL,
-    CONSTRAINT fk_observation_process FOREIGN KEY(process_id) REFERENCES Process(process_id) ON DELETE CASCADE
+    CONSTRAINT fk_observation_process FOREIGN KEY(process_id) REFERENCES Process(process_id) ON DELETE CASCADE
 );
