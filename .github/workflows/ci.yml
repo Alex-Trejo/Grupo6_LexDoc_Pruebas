@@ -188,6 +188,8 @@ jobs:
   # ===================================================================
   frontend-tests:
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     defaults:
       run:
         working-directory: frontend
@@ -235,11 +237,23 @@ jobs:
         if: needs.performance-tests.result == 'success'
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
 
-      - name: Desplegar Frontend (Placeholder)
-        # Dejamos un placeholder para el futuro despliegue del frontend.
-        # Este paso solo se ejecutaría si los tests del frontend pasaron.
+      - name: Desplegar Frontend a Vercel
+        # Se despliega solo si el job de pruebas del frontend se ejecutó y tuvo éxito.
         if: needs.frontend-tests.result == 'success'
-        run: echo "Desplegando el frontend..." # Aquí iría tu comando de despliegue para Vercel/Netlify
+        run: |
+          echo "🚀 Desplegando el frontend a Vercel..."
+          # 1. Instala la herramienta de línea de comandos de Vercel
+          npm install --global vercel
+          # 2. Conecta el directorio local con el proyecto de Vercel
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          # 3. Construye la aplicación del frontend para producción
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+          # 4. Despliega los archivos ya construidos a producción
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          # Vercel CLI necesita estos secretos para saber a qué proyecto y organización desplegar
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Publicar URL de Despliegue
         # Este paso se ejecuta para informar que el proceso ha terminado.
