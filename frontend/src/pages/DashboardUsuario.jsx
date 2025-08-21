@@ -53,7 +53,7 @@ function DashboardUsuario() {
             .catch((err) => console.error('Error al obtener evidencias', err));
         });
       })
-      .catch((err) => console.error('Error al obtener procesos', err));
+      .catch((err) => console.error('Error al obtener procesos.', err));
 
     // Obtener perfil del usuario
   fetch(`${import.meta.env.VITE_API_URL}/api/accounts/profile`, {
