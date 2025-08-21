@@ -25,4 +25,15 @@ module.exports = {
     '!src/dtos/*.js',     // Excluye todos los archivos DTO
     '!src/entities/*.js' // Excluye todos los archivos de Entidades
   ],
+
+
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
+
 };
