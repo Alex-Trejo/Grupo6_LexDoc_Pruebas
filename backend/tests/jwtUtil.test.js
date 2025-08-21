@@ -37,37 +37,37 @@ describe('JWT Utilities', () => {
   });
 
   // --- Pruebas para verifyToken ---
-//  describe('verifyToken', () => {
-//     it('debería verificar un token válido y devolver el payload', () => {
-//       const payload = { userId: 2, role: 'lector' };
-//       const validToken = jwt.sign(payload, SECRET_KEY);
-//       const decoded = verifyToken(validToken);
-//       expect(decoded).toEqual(expect.objectContaining(payload));
-//     });
+ describe('verifyToken', () => {
+    it('debería verificar un token válido y devolver el payload', () => {
+      const payload = { userId: 2, role: 'lector' };
+      const validToken = jwt.sign(payload, SECRET_KEY);
+      const decoded = verifyToken(validToken);
+      expect(decoded).toEqual(expect.objectContaining(payload));
+    });
 
-//     it('debería devolver null si el token es inválido (firma incorrecta)', () => {
-//       const payload = { userId: 3 };
-//       const invalidToken = jwt.sign(payload, 'WRONG_SECRET_KEY');
-//       const decoded = verifyToken(invalidToken);
-//       expect(decoded).toBeNull();
-//     });
+    it('debería devolver null si el token es inválido (firma incorrecta)', () => {
+      const payload = { userId: 3 };
+      const invalidToken = jwt.sign(payload, 'WRONG_SECRET_KEY');
+      const decoded = verifyToken(invalidToken);
+      expect(decoded).toBeNull();
+    });
 
-//     it('debería devolver null si el token ha expirado', () => {
-//       const payload = { userId: 4 };
-//       const expiredToken = jwt.sign(payload, SECRET_KEY, { expiresIn: 0 });
-//       const decoded = verifyToken(expiredToken);
-//       expect(decoded).toBeNull();
-//     });
+    it('debería devolver null si el token ha expirado', () => {
+      const payload = { userId: 4 };
+      const expiredToken = jwt.sign(payload, SECRET_KEY, { expiresIn: 0 });
+      const decoded = verifyToken(expiredToken);
+      expect(decoded).toBeNull();
+    });
 
-//     it('debería devolver null si el token es un string malformado', () => {
-//         const malformedToken = 'esto.no.es.un.token';
-//         const decoded = verifyToken(malformedToken);
-//         expect(decoded).toBeNull();
-//     });
+    it('debería devolver null si el token es un string malformado', () => {
+        const malformedToken = 'esto.no.es.un.token';
+        const decoded = verifyToken(malformedToken);
+        expect(decoded).toBeNull();
+    });
 
-//     it('debería devolver null si el token es nulo o indefinido', () => {
-//         expect(verifyToken(null)).toBeNull();
-//         expect(verifyToken(undefined)).toBeNull();
-//     });
-//   });
+    it('debería devolver null si el token es nulo o indefinido', () => {
+        expect(verifyToken(null)).toBeNull();
+        expect(verifyToken(undefined)).toBeNull();
+    });
+  });
 });
