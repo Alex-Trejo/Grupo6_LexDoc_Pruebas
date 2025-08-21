@@ -25,7 +25,6 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-
    # --- JOB 2: BUILD Y PRUEBAS UNITARIAS ---
   build-and-test:
     runs-on: ubuntu-latest
@@ -46,7 +45,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     defaults:
       run:
         working-directory: backend   
@@ -208,7 +206,7 @@ jobs:
         run: npm install
 
       - name: Run tests with coverage (Vitest)
-        run: npm run test:coverage
+        run: npx vitest run --coverage
 
       - name: Upload coverage report frontend
         uses: actions/upload-artifact@v4
