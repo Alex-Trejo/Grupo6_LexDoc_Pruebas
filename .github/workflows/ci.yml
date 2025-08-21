@@ -9,15 +9,29 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     defaults:
       run:
         working-directory: backend   
+    
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v4
-
-      - name: Imprimir mensaje
-        run: echo "Hola, este es un workflow simple que corre al hacer push"
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -27,20 +41,33 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
+      # ===================================================================
+      # --- PASO AÑADIDO: CONFIGURAR EL ESQUEMA DE LA BASE DE DATOS ---
+      # ===================================================================
+      - name: Configurar base de datos
+        # Este comando se conecta al servicio de PostgreSQL y ejecuta tu script SQL
+        # para crear todas las tablas necesarias antes de las pruebas.
+        run: psql -h localhost -U ${{ secrets.DB_USER }} -d ${{ secrets.DB_NAME }} -p 5432 -f database-schema.sql
+        env:
+          # psql lee la contraseña de esta variable de entorno
+          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+      
       - name: Lint del código
         run: npm run lint
 
-      - name: Ejecutar pruebas
-        run: npm test -- --coverage
-       
-
       - name: Ejecutar pruebas con cobertura
-        run: npm test -- --coverage
+        run: npm run test:coverage
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_HOST: localhost
+          DB_PORT: 5432
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CI: true
 
       - name: Guardar reporte de cobertura
         uses: actions/upload-artifact@v4
         with:
           name: cobertura-tests
           path: backend/coverage
-
-     
