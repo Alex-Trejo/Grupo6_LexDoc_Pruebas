@@ -1,0 +1,46 @@
+name: CI/CD Workflow
+
+on: 
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend   
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Imprimir mensaje
+        run: echo "Hola, este es un workflow simple que corre al hacer push"
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Lint del código
+        run: npm run lint
+
+      - name: Ejecutar pruebas
+        run: npm test -- --coverage
+       
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm test -- --coverage
+
+      - name: Guardar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-tests
+          path: backend/coverage
+
+     
